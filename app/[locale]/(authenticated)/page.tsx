@@ -1,15 +1,10 @@
-import AnnouncementCard from "@/components/AnnouncementCard";
-import RadialProgress from "@/components/RadialProgress";
 import Schedule from "@/components/Schedule";
-import ServiceRequestCard from "@/components/ServiceRequestCard";
 import { dummyCourses } from "@/dummy/courses";
 import dummySchedule from "@/dummy/schedule";
 import { dummySlotsByDay, dummyTimeRanges } from "@/dummy/slots";
 import { fakeResponse, localizedLevel } from "@/dummy/utils";
 import { getAccessToken, tt } from "@/lib";
 import { getCurrentLocale, getI18n } from "@/locales/server";
-import { getStudentServiceRequests } from "./requests/page";
-import { getAnnouncements } from "./announcements/page";
 import { instructorTaAPI, studentsAPI } from "@/api";
 import { revalidatePath } from "next/cache";
 
