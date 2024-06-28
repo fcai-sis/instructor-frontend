@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 import { useI18n } from "@/locales/client";
 
 const authFormSchema = z.object({
-  studentId: z.string().regex(/^\d+$/),
+  email: z.string().email(),
   password: z.string(),
 });
 
@@ -22,13 +22,13 @@ export default function AuthForm() {
   const router = useRouter();
   const { register, handleSubmit, formState } = useForm<AuthFormValues>({
     resolver: zodResolver(authFormSchema),
-    defaultValues: { studentId: "", password: "" },
+    defaultValues: { email: "", password: "" },
   });
 
   const onSubmit = async (values: AuthFormValues) => {
     const result = await signIn("credentials", {
       redirect: false,
-      studentId: values.studentId,
+      email: values.email,
       password: values.password,
     });
 
@@ -42,11 +42,11 @@ export default function AuthForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <label>{t("auth.studentId")}</label>
-      <input {...register("studentId")} type="text" />
+      <label>{t("auth.instructorEmail")}</label>
+      <input {...register("email")} type='email' />
       <label>{t("auth.password")}</label>
-      <input {...register("password")} type="password" />
-      <button className="btn" type="submit" disabled={formState.isSubmitting}>
+      <input {...register("password")} type='password' />
+      <button className='btn' type='submit' disabled={formState.isSubmitting}>
         {formState.isSubmitting ? t("general.loading") : t("auth.login")}
       </button>
     </form>
