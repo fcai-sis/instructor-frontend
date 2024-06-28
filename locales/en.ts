@@ -28,6 +28,7 @@ export default {
   auth: {
     title: "Login",
     studentId: "Student ID",
+    instructorEmail: "Instructor Email",
     password: "Password",
     login: "Login",
     success: "Successfully signed in",

@@ -29,6 +29,7 @@ export default {
   auth: {
     title: "تسجيل الدخول",
     studentId: "كود الطالب",
+    instructorEmail: "البريد الإلكتروني للعميل",
     password: "كلمة المرور",
     login: "تسجيل الدخول",
     success: "تم تسجيل الدخول بنجاح",
