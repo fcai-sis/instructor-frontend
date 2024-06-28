@@ -8,7 +8,7 @@ import { updateProfileValues } from "./ProfileDisplay";
 export const getProfileAction = async () => {
   const accessToken = await getAccessToken();
 
-  const response = await profileAPI.get(`/student-profile`, {
+  const response = await profileAPI.get(`/instructor-profile`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -25,26 +25,20 @@ export const getProfileAction = async () => {
 
   revalidatePath("/profile");
 
-  return {
-    success: true,
-    data: {
-      editableFields: response.data.editableProfileFields,
-      viewableFields: response.data.immutableProfileFields,
-    },
-  };
+  return { success: true, data: response.data.profile };
 };
 
 export const updateProfileAction = async (data: updateProfileValues) => {
   const accessToken = await getAccessToken();
 
   const requestBody = {
-    student: {
+    instructor: {
       ...data,
     },
   };
   console.log(data);
 
-  const response = await profileAPI.patch(`/student-profile`, requestBody, {
+  const response = await profileAPI.patch(`/instructor-profile`, requestBody, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
