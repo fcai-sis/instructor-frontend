@@ -1,5 +1,5 @@
-import { StudentType } from "@fcai-sis/shared-models";
 import { getInstructorTeachings } from "../page";
+import UpdateGradeForm from "./UpdateGradeForm";
 
 export default async function Page({
   params: { code },
@@ -12,23 +12,20 @@ export default async function Page({
   );
 
   const enrollments = response.enrolledStudents;
-  // filter through enrollments to get students in the course
+
   const courseEnrollments = enrollments.filter(
     (enrollment: any) => (enrollment.course._id = course.course._id)
-  );
-
-  const students = courseEnrollments.map(
-    (enrollment: any) => enrollment.student
   );
 
   return (
     <>
       <h1>{<p>Students in {code}</p>}</h1>
       <div>
-        {students.map((student: StudentType) => (
+        {courseEnrollments.map((enrollment: any) => (
           <div className='border border-black w-80'>
-            <h2>{student.fullName}</h2>
-            <p>{student.studentId} </p>
+            <h2>{enrollment.student.fullName}</h2>
+            <p>{enrollment.student.studentId} </p>
+            <UpdateGradeForm enrollment={enrollment} />
           </div>
         ))}
       </div>
