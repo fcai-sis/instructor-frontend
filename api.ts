@@ -54,3 +54,7 @@ export const scheduleAPI = axios.create({
   validateStatus: (status) => status < 500,
 });
 
+export const gradeAPI = axios.create({
+  baseURL: process.env.GRADE_API_URL,
+  validateStatus: (status) => status < 500,
+});
