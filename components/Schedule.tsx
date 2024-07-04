@@ -15,7 +15,7 @@ import { DummyHall } from "@/dummy/halls";
  * @param slot - The slot to format its time
  * @returns 7:00 PM - 8:30 PM
  */
-function formatSlotTime(slot: DummySlot) {
+function formatSlotTime(slot: any) {
   const startTimeAmPm = slot.start.hour >= 12 ? "PM" : "AM";
   const endTimeAmPm = slot.end.hour >= 12 ? "PM" : "AM";
   const startTimeHour = slot.start.hour % 12 || 12;
@@ -40,6 +40,7 @@ function isSameSlot(slot1: DummySlot, slot2: DummySlot): boolean {
 
 export type ScheduleProps = {
   slots: Record<DayEnumType, DummySlot[]>;
+  days: { day: DayEnumType }[];
   timeRanges: {
     day: undefined;
     start: {
@@ -55,44 +56,54 @@ export type ScheduleProps = {
 };
 
 export default function Schedule({
+  days,
   timeRanges,
   slots,
   schedule,
 }: ScheduleProps) {
   const locale = getCurrentLocale();
   return (
-    <div className="table border-separate border-spacing-2 w-full">
-      <div className="table-header-group">
-        <div className="table-row">
-          <div className="table-cell p-2"></div>
+    <div className='table border-separate border-spacing-2 w-full'>
+      <div className='table-header-group'>
+        <div className='table-row'>
+          <div className='table-cell p-2'></div>
           {timeRanges.map((timeRange) => (
             <div
-              className="table-cell rounded-lg p-2 bg-white border border-slate-200 text-center"
+              className='table-cell rounded-lg p-2 bg-white border border-slate-200 text-center'
               key={JSON.stringify(timeRange)}
             >
-              <p dir="ltr">
+              <p dir='ltr'>
                 {formatSlotTime(timeRange as unknown as DummySlot)}
               </p>
             </div>
           ))}
         </div>
       </div>
-      {Object.keys(slots).map((currentDay) => (
-        <div className="table-row" key={currentDay}>
-          <div className="table-cell rounded-lg p-2 bg-white border border-slate-200">
+      {days.map(({ day: currentDay }) => (
+        <div className='table-row' key={currentDay}>
+          <div className='table-cell rounded-lg p-2 bg-white border border-slate-200'>
             {tt(locale, dayLocalizedEnum[currentDay as DayEnumType])}
           </div>
-          {slots[currentDay as DayEnumType].map((currentTimeRange) => (
+          {timeRanges.map((currentTimeRange, index) => (
             <>
               {(() => {
                 // find all items that have the same slot and check if they are lectures or sections
                 const items = schedule.filter((item) =>
-                  isSameSlot(item.slot, currentTimeRange as DummySlot)
+                  isSameSlot(item.slot, {
+                    day: currentDay,
+                    start: currentTimeRange.start,
+                    end: currentTimeRange.end,
+                  })
                 );
 
                 if (items.length === 0)
                   return (
-                    <div className="table-cell bg-slate-100 rounded-lg"></div>
+                    <div
+                      className='table-cell bg-slate-100 rounded-lg'
+                      key={index}
+                    >
+                      {" "}
+                    </div>
                   );
 
                 // map each item to a form based on its type
@@ -133,17 +144,17 @@ type LectureSlotProps = Readonly<{
 function LectureSlot({ lecture, hall }: LectureSlotProps) {
   const locale = getCurrentLocale();
   return (
-    <div className="p-2 m-1 rounded-lg bg-white border border-slate-200">
+    <div className='p-2 m-1 rounded-lg bg-white border border-slate-200'>
       <p>
-        <small className="text-slate-400">
+        <small className='text-slate-400'>
           {tt(locale, { en: "Lecture", ar: "محاضرة" })}
         </small>
       </p>
       <p>{tt(locale, lecture.course.name)}</p>
       {/* <p>{lecture.course.code}</p> */}
       {/* <p>{lecture.instructor.fullName}</p> */}
-      <p className="flex py-1">
-        <small className="rounded-lg bg-blue-100 text-blue-500 p-2">
+      <p className='flex py-1'>
+        <small className='rounded-lg bg-blue-100 text-blue-500 p-2'>
           {tt(locale, hall.name)}
         </small>
       </p>
@@ -158,20 +169,20 @@ type SectionSlotProps = Readonly<{
 function SectionSlot({ section, hall }: SectionSlotProps) {
   const locale = getCurrentLocale();
   return (
-    <div className="p-2 m-1 rounded-lg bg-white border border-slate-200">
+    <div className='p-2 m-1 rounded-lg bg-white border border-slate-200'>
       <p>
-        <small className="text-slate-400">
+        <small className='text-slate-400'>
           {tt(locale, { en: "Section", ar: "مجموعة" })}
         </small>
       </p>
       <p>{tt(locale, section.course.name)}</p>
       {/* <p>{section.course.code}</p> */}
       {/* <p>{section.instructor.fullName}</p> */}
-      <p className="flex py-1 gap-2">
-        <small className="rounded-lg bg-blue-100 text-blue-500 p-2">
+      <p className='flex py-1 gap-2'>
+        <small className='rounded-lg bg-blue-100 text-blue-500 p-2'>
           {tt(locale, hall.name)}
         </small>
-        <small className="rounded-lg bg-blue-100 text-blue-500 p-2">
+        <small className='rounded-lg bg-blue-100 text-blue-500 p-2'>
           {section.group}
         </small>
       </p>

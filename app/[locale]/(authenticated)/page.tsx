@@ -5,7 +5,7 @@ import { dummySlotsByDay, dummyTimeRanges } from "@/dummy/slots";
 import { fakeResponse, localizedLevel } from "@/dummy/utils";
 import { getAccessToken, tt } from "@/lib";
 import { getCurrentLocale, getI18n } from "@/locales/server";
-import { instructorTaAPI, studentsAPI } from "@/api";
+import { instructorTaAPI, scheduleAPI, slotsAPI, studentsAPI } from "@/api";
 import { revalidatePath } from "next/cache";
 
 const getInstructor = async () => {
@@ -23,6 +23,23 @@ const getInstructor = async () => {
 
   return response.data;
 };
+const getMySchedule = async () => {
+  const accessToken = await getAccessToken();
+  const { data: scheduleData } = await scheduleAPI.get("/instructor", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!scheduleData) throw new Error("Failed to fetch schedule");
+
+  return scheduleData;
+};
+
+export const getSlots = async () => {
+  const { data: slotData } = await slotsAPI.get("/");
+  return slotData;
+};
 
 export default async function Page() {
   const t = await getI18n();
@@ -31,28 +48,33 @@ export default async function Page() {
   const getInstructorResponse = await getInstructor();
   const instructor = getInstructorResponse.instructor;
 
-  const _eligibleCourses = dummyCourses;
-  const _schedule = dummySchedule;
+  const { schedule } = await getMySchedule();
+  console.log(schedule);
 
-  const { data: scheduleData } = await fakeResponse({
-    status: 200,
-    data: {
-      schedule: _schedule,
-    },
-  });
-  const { schedule } = scheduleData;
+  const { slots, timeRanges, days } = await getSlots();
 
-  const _slots = dummySlotsByDay;
-  const _timeRanges = dummyTimeRanges;
+  // const _eligibleCourses = dummyCourses;
+  // const _schedule = dummySchedule;
 
-  const { data: slotData } = await fakeResponse({
-    status: 200,
-    data: {
-      slots: _slots,
-      timeRanges: _timeRanges,
-    },
-  });
-  const { slots, timeRanges } = slotData;
+  // const { data: scheduleData } = await fakeResponse({
+  //   status: 200,
+  //   data: {
+  //     schedule: _schedule,
+  //   },
+  // });
+  // const { schedule } = scheduleData;
+
+  // const _slots = dummySlotsByDay;
+  // const _timeRanges = dummyTimeRanges;
+
+  // const { data: slotData } = await fakeResponse({
+  //   status: 200,
+  //   data: {
+  //     slots: _slots,
+  //     timeRanges: _timeRanges,
+  //   },
+  // });
+  // const { slots, timeRanges } = slotData;
 
   return (
     <>
@@ -78,7 +100,12 @@ export default async function Page() {
       </div>
       <div className='flex-col py-4 w-full'>
         <h2>{t("home.schedule")}</h2>
-        <Schedule slots={slots} timeRanges={timeRanges} schedule={schedule} />
+        <Schedule
+          days={days}
+          slots={slots}
+          timeRanges={timeRanges}
+          schedule={schedule}
+        />
       </div>
     </>
   );
