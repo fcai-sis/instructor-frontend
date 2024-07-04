@@ -71,27 +71,36 @@ export default async function Page({
   return (
     <>
       <div>
-        <h1>Teaching Assistants</h1>
+        <h1 className='text-3xl font-bold mb-6'>Teaching Assistants</h1>
         <SelectFilter name='department' options={departmentOptions} />
-        <div>
-          {teachingAssistants.map((ta: any) => (
-            <div className='border border-black w-80'>
-              <p>
+        <div className='space-y-4 mt-4'>
+          {teachingAssistants.map((ta: any, i: number) => (
+            <div
+              className='border border-gray-300 p-4 rounded-lg shadow-md'
+              key={i}
+            >
+              <p className='text-gray-700 mb-2'>
                 <b>Name: </b>
                 {ta.fullName}
               </p>
-              <p>
+              <p className='text-gray-700 mb-2'>
                 <b>Email: </b>
                 {ta.email}
               </p>
-              <p>
+              <p className='text-gray-700 mb-2'>
                 <b>Department: </b>
                 {ta.department.name.en}
               </p>
               {ta.officeHours && (
-                <p>
+                <p className='text-gray-700 mb-2'>
                   <b>Office Hours: </b>
                   {ta.officeHours}
+                </p>
+              )}
+              {ta.office && (
+                <p className='text-gray-700 mb-2'>
+                  <b>Office: </b>
+                  {ta.office}
                 </p>
               )}
             </div>

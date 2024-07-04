@@ -72,27 +72,36 @@ export default async function Page({
   return (
     <>
       <div>
-        <h1>Instructors</h1>
+        <h1 className='text-3xl font-bold mb-6'>Instructors</h1>
         <SelectFilter name='department' options={departmentOptions} />
-        <div>
-          {instructors.map((instructor: any) => (
-            <div className='border border-black w-80'>
-              <p>
+        <div className='space-y-4 mt-4'>
+          {instructors.map((instructor: any, i: number) => (
+            <div
+              className='border border-gray-300 p-4 rounded-lg shadow-md'
+              key={i}
+            >
+              <p className='text-gray-700 mb-2'>
                 <b>Name: </b>
                 {instructor.fullName}
               </p>
-              <p>
+              <p className='text-gray-700 mb-2'>
                 <b>Email: </b>
                 {instructor.email}
               </p>
-              <p>
+              <p className='text-gray-700 mb-2'>
                 <b>Department: </b>
                 {instructor.department.name.en}
               </p>
               {instructor.officeHours && (
-                <p>
+                <p className='text-gray-700 mb-2'>
                   <b>Office Hours: </b>
                   {instructor.officeHours}
+                </p>
+              )}
+              {instructor.office && (
+                <p className='text-gray-700 mb-2'>
+                  <b>Office: </b>
+                  {instructor.office}
                 </p>
               )}
             </div>
