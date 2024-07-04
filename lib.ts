@@ -8,7 +8,7 @@ export function cn(...args: ClassValue[]) {
   return twMerge(clsx(args));
 }
 
-function tokenPayload(session: Session | null) {
+export function tokenPayload(session: Session | null) {
   return {
     role: session?.user?.name,
     userId: session?.user?.email,
