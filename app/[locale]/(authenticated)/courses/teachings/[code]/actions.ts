@@ -6,11 +6,12 @@ import { revalidatePath } from "next/cache";
 
 export const updateEnrollmentGrade = async (data: UpdateGradeFormValues) => {
   const accessToken = await getAccessToken();
-  const { enrollment, grade } = data;
+  const { enrollment, termWorkGrade, finalExamGrade } = data;
   console.log(data);
 
   const requestBody = {
-    termWorkMark: grade,
+    termWorkMark: termWorkGrade,
+    finalExamMark: finalExamGrade,
   };
 
   const response = await gradeAPI.patch(`/update/${enrollment}`, requestBody, {

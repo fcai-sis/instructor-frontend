@@ -8,7 +8,8 @@ import toast from "react-hot-toast";
 import { updateEnrollmentGrade } from "./actions";
 
 const updateGradeFormSchema = z.object({
-  grade: z.number().int().min(0).max(40),
+  termWorkGrade: z.number().int().min(0).max(40),
+  finalExamGrade: z.number().int().min(0).max(60),
   enrollment: z.string(),
 });
 
@@ -23,7 +24,8 @@ export default function UpdateGradeForm({ enrollment }: { enrollment: any }) {
   } = useForm<UpdateGradeFormValues>({
     resolver: zodResolver(updateGradeFormSchema),
     defaultValues: {
-      grade: enrollment.termWorkMark,
+      termWorkGrade: enrollment.termWorkMark,
+      finalExamGrade: enrollment.finalExamMark,
       enrollment: enrollment._id,
     },
   });
@@ -45,8 +47,16 @@ export default function UpdateGradeForm({ enrollment }: { enrollment: any }) {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <label>Term Work Grade</label>
-      <input type='number' {...register("grade", { valueAsNumber: true })} />
-      {errors.grade && <p>{errors.grade.message}</p>}
+      <input
+        type='number'
+        {...register("termWorkGrade", { valueAsNumber: true })}
+      />
+      {errors.termWorkGrade && <p>{errors.termWorkGrade.message}</p>}
+      <label>Final Exam Grade</label>
+      <input
+        type='number'
+        {...register("finalExamGrade", { valueAsNumber: true })}
+      />
       <button className='btn' type='submit' disabled={isSubmitting}>
         {isSubmitting ? "Submitting" : "Submit"}
       </button>
