@@ -13,7 +13,12 @@ export const getGraduationProjectEnrollments = async () => {
     },
   });
 
-  if (response.status !== 200) throw new Error("Failed to fetch enrollments");
+  if (response.status !== 200) {
+    revalidatePath("/graduation");
+    return {
+      enrollments: [],
+    };
+  }
 
   revalidatePath("/graduation");
 
@@ -29,7 +34,15 @@ export const getGraduationProjectTeachings = async () => {
     },
   });
 
-  if (response.status !== 200) throw new Error("Failed to fetch teachings");
+  console.log(response.status, response.data);
+
+  if (response.status !== 200) {
+    revalidatePath("/graduation");
+    return {
+      instructorTeachings: [],
+      taTeachings: [],
+    };
+  }
 
   revalidatePath("/graduation");
 
@@ -39,11 +52,9 @@ export const getGraduationProjectTeachings = async () => {
 export default async function Page({
   params: { locale },
 }: Readonly<{ params: { locale: string } }>) {
-  const enrollmentResponse = await getGraduationProjectEnrollments();
-  const enrollments = enrollmentResponse.enrollments;
-  const teachingResponse = await getGraduationProjectTeachings();
-  const instructorTeachings = teachingResponse.instructorTeachings;
-  const assistantTeachings = teachingResponse.taTeachings;
+  const { enrollments } = await getGraduationProjectEnrollments();
+  const { instructorTeachings, taTeachings } =
+    await getGraduationProjectTeachings();
 
   return (
     <>
@@ -51,7 +62,7 @@ export default async function Page({
         <CreateGraduationForm
           enrollments={enrollments}
           instructorTeachings={instructorTeachings}
-          assistantTeachings={assistantTeachings}
+          assistantTeachings={taTeachings}
         />
       </I18nProviderClient>
     </>
