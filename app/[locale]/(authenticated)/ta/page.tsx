@@ -1,7 +1,8 @@
 import { departmentsAPI, instructorTaAPI } from "@/api";
 import Pagination from "@/components/Pagination";
 import { SelectFilter } from "@/components/SetQueryFilter";
-import { getAccessToken, getCurrentPage, limit } from "@/lib";
+import { getAccessToken, getCurrentPage, limit, tt } from "@/lib";
+import { getCurrentLocale, getI18n } from "@/locales/server";
 import { DepartmentType } from "@fcai-sis/shared-models";
 import { revalidatePath } from "next/cache";
 
@@ -36,6 +37,7 @@ export const getDepartments = async () => {
       Authorization: `Bearer ${accessToken}`,
     },
   });
+  console.log(response.data);
 
   if (response.status !== 200) throw new Error("Failed to fetch departments");
 
@@ -48,6 +50,8 @@ export default async function Page({
   searchParams,
 }: Readonly<{ searchParams: { page: string; department: string } }>) {
   const page = getCurrentPage(searchParams);
+  const t = await getI18n();
+  const locale = getCurrentLocale();
   const departmentSelected =
     searchParams.department as unknown as DepartmentType;
 
@@ -55,7 +59,7 @@ export default async function Page({
   const teachingAssistants = response.teachingAssistants;
   const total = response.totalTeachingAssistants;
 
-  const departments = await getDepartments();
+  const { departments } = await getDepartments();
 
   const departmentOptions = [
     {
@@ -71,7 +75,9 @@ export default async function Page({
   return (
     <>
       <div>
-        <h1 className='text-3xl font-bold mb-6'>Teaching Assistants</h1>
+        <h1 className='text-3xl font-bold mb-6'>
+          {t("instructorTa.assistantTitle")}
+        </h1>
         <SelectFilter name='department' options={departmentOptions} />
         <div className='space-y-4 mt-4'>
           {teachingAssistants.map((ta: any, i: number) => (
@@ -80,26 +86,26 @@ export default async function Page({
               key={i}
             >
               <p className='text-gray-700 mb-2'>
-                <b>Name: </b>
+                <b>{t("instructorTa.name")}: </b>
                 {ta.fullName}
               </p>
               <p className='text-gray-700 mb-2'>
-                <b>Email: </b>
+                <b>{t("instructorTa.email")}: </b>
                 {ta.email}
               </p>
               <p className='text-gray-700 mb-2'>
-                <b>Department: </b>
-                {ta.department.name.en}
+                <b>{t("instructorTa.department")}: </b>
+                {tt(locale, ta.department.name)}
               </p>
               {ta.officeHours && (
                 <p className='text-gray-700 mb-2'>
-                  <b>Office Hours: </b>
+                  <b>{t("instructorTa.officeHours")}: </b>
                   {ta.officeHours}
                 </p>
               )}
               {ta.office && (
                 <p className='text-gray-700 mb-2'>
-                  <b>Office: </b>
+                  <b>{t("instructorTa.office")}: </b>
                   {ta.office}
                 </p>
               )}

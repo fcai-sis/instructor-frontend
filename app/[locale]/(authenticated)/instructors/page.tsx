@@ -1,7 +1,8 @@
 import { departmentsAPI, instructorTaAPI } from "@/api";
 import Pagination from "@/components/Pagination";
 import { SelectFilter } from "@/components/SetQueryFilter";
-import { getAccessToken, getCurrentPage, limit } from "@/lib";
+import { getAccessToken, getCurrentPage, limit, tt } from "@/lib";
+import { getCurrentLocale, getI18n } from "@/locales/server";
 import { DepartmentType } from "@fcai-sis/shared-models";
 import { revalidatePath } from "next/cache";
 
@@ -47,7 +48,8 @@ export default async function Page({
   searchParams,
 }: Readonly<{ searchParams: { page: string; department: string } }>) {
   const page = getCurrentPage(searchParams);
-
+  const t = await getI18n();
+  const locale = getCurrentLocale();
   const departmentSelected =
     searchParams.department as unknown as DepartmentType;
 
@@ -72,7 +74,9 @@ export default async function Page({
   return (
     <>
       <div>
-        <h1 className='text-3xl font-bold mb-6'>Instructors</h1>
+        <h1 className='text-3xl font-bold mb-6'>
+          {t("instructorTa.instructorTitle")}
+        </h1>
         <SelectFilter name='department' options={departmentOptions} />
         <div className='space-y-4 mt-4'>
           {instructors.map((instructor: any, i: number) => (
@@ -81,26 +85,26 @@ export default async function Page({
               key={i}
             >
               <p className='text-gray-700 mb-2'>
-                <b>Name: </b>
+                <b>{t("instructorTa.name")}: </b>
                 {instructor.fullName}
               </p>
               <p className='text-gray-700 mb-2'>
-                <b>Email: </b>
+                <b>{t("instructorTa.email")}: </b>
                 {instructor.email}
               </p>
               <p className='text-gray-700 mb-2'>
-                <b>Department: </b>
-                {instructor.department.name.en}
+                <b>{t("instructorTa.department")}: </b>
+                {tt(locale, instructor.department.name)}
               </p>
               {instructor.officeHours && (
                 <p className='text-gray-700 mb-2'>
-                  <b>Office Hours: </b>
+                  <b>{t("instructorTa.officeHours")}: </b>
                   {instructor.officeHours}
                 </p>
               )}
               {instructor.office && (
                 <p className='text-gray-700 mb-2'>
-                  <b>Office: </b>
+                  <b>{t("instructorTa.office")}: </b>
                   {instructor.office}
                 </p>
               )}

@@ -28,9 +28,8 @@ export default async function Page() {
   const t = await getI18n();
   const locale = getCurrentLocale();
 
-  const getStudentResponse = await getInstructor();
-  const instructor = getStudentResponse.instructor;
-  console.log(instructor);
+  const getInstructorResponse = await getInstructor();
+  const instructor = getInstructorResponse.instructor;
 
   const _eligibleCourses = dummyCourses;
   const _schedule = dummySchedule;

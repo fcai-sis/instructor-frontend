@@ -1,16 +1,20 @@
-import { enrollmentsAPI, instructorTaAPI, scheduleAPI } from "@/api";
+import { scheduleAPI } from "@/api";
 import Pagination from "@/components/Pagination";
-import { getAccessToken, getCurrentPage, limit } from "@/lib";
-import { getI18n } from "@/locales/server";
+import { getAccessToken, getCurrentPage, limit, tt } from "@/lib";
+import { getCurrentLocale, getI18n } from "@/locales/server";
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
 
-export const getInstructorTeachings = async () => {
+export const getInstructorTeachings = async (page?: number) => {
   const accessToken = await getAccessToken();
 
-  const response = await scheduleAPI.get(`/schedule/instructor-teachings/`, {
+  const response = await scheduleAPI.get(`/instructor-teaching/me`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
+    },
+    params: {
+      skip: page ? page * limit - limit : 0,
+      limit,
     },
   });
 
@@ -25,31 +29,68 @@ export default async function Page({
   searchParams,
 }: Readonly<{ searchParams: { page: string } }>) {
   const t = await getI18n();
+  const locale = getCurrentLocale();
 
   const page = getCurrentPage(searchParams);
 
-  const response = await getInstructorTeachings();
+  const response = await getInstructorTeachings(page);
   const teachings = response.myTeachings;
+  const totalTeachings = response.totalTeachings;
 
   return (
-    <>
-      <h1>{t("myCourses.title")}</h1>
-      <div>
+    <div className='flex flex-col p-4'>
+      <h1 className='text-3xl font-bold mb-4'>{t("myCourses.title")}</h1>
+      <div className='flex flex-col gap-4'>
         {teachings.map((teaching: any) => (
-          <div className='border border-black w-80'>
-            <h2>{teaching.course.name.ar}</h2>
-            <p>{teaching.course.code} </p>
-            <p>
-              <b>Credit Hours: </b>
+          <div
+            key={teaching.course.code}
+            className='border border-gray-300 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300'
+          >
+            <h2 className='text-xl font-bold mb-2'>
+              {teaching.course.name.ar}
+            </h2>
+            <p className='font-semibold'>
+              <span className='font-bold'>
+                {tt(locale, {
+                  en: "Code: ",
+                  ar: "الرمز: ",
+                })}{" "}
+              </span>
+              {teaching.course.code}
+            </p>
+            <p className='font-semibold'>
+              <span className='font-bold'>
+                {tt(locale, {
+                  en: "Name: ",
+                  ar: "الاسم: ",
+                })}{" "}
+              </span>
+              {tt(locale, teaching.course.name)}
+            </p>
+            <p className='font-semibold'>
+              <span className='font-bold'>
+                {tt(locale, {
+                  en: "Credit Hours: ",
+                  ar: "عدد الساعات:",
+                })}{" "}
+              </span>
               {teaching.course.creditHours}
             </p>
-
-            <Link href={`/courses/teachings/${teaching.course.code}`}>
-              View Students Enrolled
+            <Link
+              className='mt-2 inline-block bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-300'
+              href={`/courses/teachings/${teaching.course.code}`}
+            >
+              {tt(locale, {
+                en: "View Enrolled Students",
+                ar: "عرض الطلاب المسجلين",
+              })}
             </Link>
           </div>
         ))}
       </div>
-    </>
+      <div className='mt-4'>
+        <Pagination totalPages={totalTeachings / limit} />
+      </div>
+    </div>
   );
 }

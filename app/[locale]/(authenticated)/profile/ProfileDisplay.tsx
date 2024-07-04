@@ -58,18 +58,28 @@ export default function UpdateProfileForm({
       return toast.error(updateProfileResponse.error?.message);
     }
 
-    toast.success("Profile Updated Successfully");
+    toast.success(t("profile.success"));
     router.push(`/profile`);
   };
 
   return (
     <div className='flex justify-center items-center '>
       <div className='w-full max-w-lg p-6 bg-white shadow-lg rounded-lg'>
-        <h1 className='text-3xl font-bold mb-6 text-center'>Profile</h1>
+        <h1 className='text-3xl font-bold mb-6 text-center'>
+          {tt(locale, {
+            en: "Profile",
+            ar: "الملف الشخصي",
+          })}
+        </h1>
 
         <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
           <div className='flex flex-col'>
-            <label className='text-lg font-medium'>Full Name</label>
+            <label className='text-lg font-medium'>
+              {tt(locale, {
+                en: "Full Name",
+                ar: "الاسم الكامل",
+              })}
+            </label>
             <input
               {...register("fullName")}
               type='text'
@@ -82,7 +92,12 @@ export default function UpdateProfileForm({
           </div>
 
           <div className='flex flex-col'>
-            <label className='text-lg font-medium'>Office</label>
+            <label className='text-lg font-medium'>
+              {tt(locale, {
+                en: "Office",
+                ar: "المكتب",
+              })}
+            </label>
             <input
               {...register("office")}
               type='text'
@@ -95,13 +110,19 @@ export default function UpdateProfileForm({
           </div>
 
           <div className='flex flex-col'>
-            <label className='text-lg font-medium'>Office Hours</label>
+            <label className='text-lg font-medium'>
+              {tt(locale, {
+                en: "Office Hours",
+                ar: "ساعات العمل",
+              })}
+            </label>
             <div className='flex gap-4'>
               <input
                 {...register("officeHoursFrom")}
                 type='time'
                 defaultValue={profileFieldsLookup["officeHoursFrom"]}
                 className='p-2 border border-gray-300 rounded-lg'
+                required
               />
               <span className='self-center'>to</span>
               <input
@@ -109,6 +130,7 @@ export default function UpdateProfileForm({
                 type='time'
                 defaultValue={profileFieldsLookup["officeHoursTo"]}
                 className='p-2 border border-gray-300 rounded-lg'
+                required
               />
             </div>
             {errors.officeHoursFrom && (
@@ -128,7 +150,10 @@ export default function UpdateProfileForm({
                     htmlFor={key}
                     className='flex text-lg font-medium text-gray-700 mb-1'
                   >
-                    {key.charAt(0).toUpperCase() + key.slice(1)}
+                    {tt(locale, {
+                      en: "Department",
+                      ar: "القسم",
+                    })}
                   </label>
                   <input
                     type='text'
@@ -148,7 +173,7 @@ export default function UpdateProfileForm({
               type='submit'
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Submitting" : "Submit"}
+              {isSubmitting ? t("general.loading") : t("profile.update")}
             </button>
             <button
               className='btn-secondary flex justify-center'

@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { updateEnrollmentGrade } from "./actions";
+import { useI18n } from "@/locales/client";
 
 const updateGradeFormSchema = z.object({
   termWorkGrade: z.number().int().min(0).max(40),
@@ -16,6 +17,7 @@ const updateGradeFormSchema = z.object({
 export type UpdateGradeFormValues = z.infer<typeof updateGradeFormSchema>;
 
 export default function UpdateGradeForm({ enrollment }: { enrollment: any }) {
+  const t = useI18n();
   const router = useRouter();
   const {
     handleSubmit,
@@ -36,30 +38,55 @@ export default function UpdateGradeForm({ enrollment }: { enrollment: any }) {
     if (!updateEnrollmentGradeResponse.success) {
       return toast.error(
         updateEnrollmentGradeResponse.error?.message ??
-          "Failed to update enrollment grade"
+          t("teachings.error.updateFailed")
       );
     }
 
-    toast.success("Enrollment grade updated successfully");
+    toast.success(t("teachings.success"));
     router.push(`/courses/teachings`);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <label>Term Work Grade</label>
-      <input
-        type='number'
-        {...register("termWorkGrade", { valueAsNumber: true })}
-      />
-      {errors.termWorkGrade && <p>{errors.termWorkGrade.message}</p>}
-      <label>Final Exam Grade</label>
-      <input
-        type='number'
-        {...register("finalExamGrade", { valueAsNumber: true })}
-      />
-      <button className='btn' type='submit' disabled={isSubmitting}>
-        {isSubmitting ? "Submitting" : "Submit"}
-      </button>
+    <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
+      <div className='flex flex-col'>
+        <label className='mb-1 font-medium'>
+          {t("teachings.termWorkGrade")}
+        </label>
+        <input
+          type='number'
+          className='p-2 border border-gray-300 rounded-lg'
+          {...register("termWorkGrade", { valueAsNumber: true })}
+        />
+        {errors.termWorkGrade && (
+          <p className='text-red-500 text-sm mt-1'>
+            {errors.termWorkGrade.message}
+          </p>
+        )}
+      </div>
+      <div className='flex flex-col'>
+        <label className='mb-1 font-medium'>
+          {t("teachings.finalExamGrade")}
+        </label>
+        <input
+          type='number'
+          className='p-2 border border-gray-300 rounded-lg'
+          {...register("finalExamGrade", { valueAsNumber: true })}
+        />
+        {errors.finalExamGrade && (
+          <p className='text-red-500 text-sm mt-1'>
+            {errors.finalExamGrade.message}
+          </p>
+        )}
+      </div>
+      <div className='flex justify-center'>
+        <button
+          type='submit'
+          className='btn flex justify-center'
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? t("general.loading") : t("teachings.updateGrade")}
+        </button>
+      </div>
     </form>
   );
 }

@@ -4,7 +4,13 @@ import { getI18n } from "@/locales/server";
 import Link from "next/link";
 import Dropdown from "./Dropdown";
 import ChangeLanguageButton from "./ChangeLanguageButton";
-import { BookStack, Home } from "iconoir-react";
+import {
+  BookStack,
+  Home,
+  Industry,
+  LeaderboardStar,
+  Suitcase,
+} from "iconoir-react";
 import Image from "next/image";
 
 export default async function Navbar({ locale }: { locale: string }) {
@@ -22,16 +28,28 @@ export default async function Navbar({ locale }: { locale: string }) {
           <BookStack />
           {t("myCourses.title")}
         </Link>
+        <Link href='/instructors' className='flex gap-2 items-center'>
+          {t("nav.instructors")}
+          <Industry />
+        </Link>
+        <Link href='/ta' className='flex gap-2 items-center'>
+          {t("nav.teacherAssistants")}
+          <Suitcase />
+        </Link>
+        <Link href='/top' className='flex gap-2 items-center'>
+          {t("nav.top")}
+          <LeaderboardStar />
+        </Link>
         <I18nProviderClient locale={locale}>
           <Dropdown label={t("nav.more")}>
-            <Link href='/instructors' className='block w-full'>
-              {t("nav.instructors")}
-            </Link>
-            <Link href='/ta' className='block w-full'>
-              {t("nav.teacherAssistants")}
-            </Link>
             <Link href='/profile' className='block w-full'>
               {t("profile.title")}
+            </Link>
+            <Link href='/courses' className='block w-full'>
+              {t("nav.courses")}
+            </Link>
+            <Link href='/graduation' className='block w-full'>
+              {t("nav.graduation")}
             </Link>
             <SignOutButton />
           </Dropdown>

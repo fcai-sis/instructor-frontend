@@ -1,7 +1,8 @@
 import { coursesAPI, departmentsAPI } from "@/api";
 import Pagination from "@/components/Pagination";
 import { SelectFilter } from "@/components/SetQueryFilter";
-import { getAccessToken, getCurrentPage, limit } from "@/lib";
+import { getAccessToken, getCurrentPage, limit, tt } from "@/lib";
+import { getCurrentLocale } from "@/locales/server";
 import { DepartmentType } from "@fcai-sis/shared-models";
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
@@ -45,6 +46,7 @@ export const getDepartments = async () => {
 export default async function Page({
   searchParams,
 }: Readonly<{ searchParams: { page: string; department: string } }>) {
+  const locale = getCurrentLocale();
   const page = getCurrentPage(searchParams);
   const departmentSelected =
     searchParams.department as unknown as DepartmentType;
@@ -52,48 +54,84 @@ export default async function Page({
   const response = await getCourses(page, departmentSelected);
   const courses = response.courses;
   const total = response.totalCourses;
-  console.log(courses);
 
   const departmentResponse = await getDepartments();
   const departments = departmentResponse.departments;
 
   const departmentOptions = [
     {
-      label: "All",
+      label: tt(locale, { en: "All Departments", ar: "جميع الأقسام" }),
       value: "",
     },
     ...departments.map((department: any) => ({
-      label: department.name.en,
+      label: tt(locale, department.name),
       value: department.code,
     })),
   ];
 
   return (
-    <>
-      <h1>Courses</h1>
-      <SelectFilter name='department' options={departmentOptions} />
-      <div>
+    <div className='flex flex-col p-4'>
+      <h1 className='text-3xl font-bold mb-4'>
+        {tt(locale, {
+          en: "Courses",
+          ar: "المقررات",
+        })}
+      </h1>
+      <div className='mb-4'>
+        <SelectFilter name='department' options={departmentOptions} />
+      </div>
+      <div className='flex flex-col gap-4'>
         {courses.map((course: any) => (
-          <div className='border border-black w-80'>
-            <p>
-              <b>Code: </b>
+          <div
+            key={course.code}
+            className='border border-gray-300 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300'
+          >
+            <p className='font-semibold'>
+              <span className='font-bold'>
+                {tt(locale, {
+                  en: "Code: ",
+                  ar: "الرمز: ",
+                })}{" "}
+              </span>
               {course.code}
             </p>
-            <p>
-              <b>Name: </b>
-              {course.name.en}
+            <p className='font-semibold'>
+              <span className='font-bold'>
+                {tt(locale, {
+                  en: "Name: ",
+                  ar: "الاسم: ",
+                })}{" "}
+              </span>
+              {tt(locale, course.name)}
             </p>
-            <p>
-              <b>Departments: </b>
+            <p className='font-semibold'>
+              <span className='font-bold'>
+                {tt(locale, {
+                  en: "Departments: ",
+                  ar: "الأقسام: ",
+                })}{" "}
+              </span>
               {course.departments?.map((department: any) => (
-                <span key={department.code}>{department.name.en}, </span>
+                <span key={department.code} className='mr-1'>
+                  {tt(locale, department.name)}
+                </span>
               ))}
             </p>
-            <Link href={`/courses/${course.code}`}>View details</Link>
+            <Link
+              className='mt-2 inline-block bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-300'
+              href={`/courses/${course.code}`}
+            >
+              {tt(locale, {
+                en: "View Details",
+                ar: "عرض التفاصيل",
+              })}
+            </Link>
           </div>
         ))}
+      </div>
+      <div className='mt-4'>
         <Pagination totalPages={total / limit} />
       </div>
-    </>
+    </div>
   );
 }
