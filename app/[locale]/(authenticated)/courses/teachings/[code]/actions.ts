@@ -23,7 +23,9 @@ export const updateEnrollmentGrade = async (data: UpdateGradeFormValues) => {
     return {
       success: false,
       error: {
-        message: response.data.error.message,
+        message: response.data.errors
+          .map((error: any) => error.message)
+          .join(", "),
       },
     };
   }
