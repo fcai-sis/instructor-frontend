@@ -68,3 +68,8 @@ export const statisticsAPI = axios.create({
   baseURL: process.env.STATISTICS_API_URL,
   validateStatus: (status) => status < 500,
 });
+
+export const slotsAPI = axios.create({
+  baseURL: process.env.SLOTS_API_URL,
+  validateStatus: (status) => status < 500,
+});
