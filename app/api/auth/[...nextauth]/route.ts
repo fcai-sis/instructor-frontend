@@ -1,10 +1,10 @@
 import dbConnect from "@/database";
 import {
   InstructorModel,
-  IUser,
-  TeachingAssistantModel,
+  InstructorType,
   UserModel,
 } from "@fcai-sis/shared-models";
+import { Role } from "@fcai-sis/shared-middlewares";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
@@ -30,21 +30,15 @@ const handler = NextAuth({
 
         await dbConnect();
 
-        const [instructor, teachingAssistant] = await Promise.all([
-          InstructorModel.findOne({
+        const instructor: InstructorType | null = await InstructorModel.findOne(
+          {
             email: credentials.email,
-          }),
-          TeachingAssistantModel.findOne({
-            email: credentials.email,
-          }),
-        ]);
-
-        if (!instructor && !teachingAssistant) return null;
-        const instructorOrTA = instructor || teachingAssistant;
-
-        const user: IUser | null = await UserModel.findById(
-          instructorOrTA.user
+          }
         );
+
+        if (!instructor) return null;
+
+        const user = await UserModel.findById(instructor.user);
 
         if (!user) return null;
 
@@ -56,9 +50,9 @@ const handler = NextAuth({
         if (!isPasswordMatch) return null;
 
         return {
-          id: user._id as string,
-          email: user._id as string,
-          name: user.role as string,
+          id: user._id,
+          email: user._id,
+          name: Role.INSTRUCTOR,
         };
       },
     }),
