@@ -9,7 +9,7 @@ export default async function Layout({
   await ensureUnauthenticated();
   return (
     <>
-      <ChangeLanguageButton />
+      <ChangeLanguageButton className="absolute top-0 left-0 m-4" />
       {children}
     </>
   );

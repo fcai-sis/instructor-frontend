@@ -20,8 +20,14 @@ export default function RootLayout({
   const { direction: dir } = new Locale(locale).textInfo;
 
   return (
-    <html lang={locale} dir={dir}>
-      <body className={`${rubik.className}`}>
+    <html
+      lang={locale}
+      dir={dir}
+      className="w-full h-full flex items-center justify-center"
+    >
+      <body
+        className={`${rubik.className} w-full h-full flex justify-center items-center`}
+      >
         {children}
         <Toaster position="top-right" />
       </body>

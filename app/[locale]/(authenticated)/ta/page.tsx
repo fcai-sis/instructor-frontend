@@ -1,4 +1,4 @@
-import { departmentsAPI, instructorTaAPI } from "@/api";
+import { departmentsAPI, instructorTaAPI, tasAPI } from "@/api";
 import Pagination from "@/components/Pagination";
 import { SelectFilter, TextFilter } from "@/components/SetQueryFilter";
 import { getAccessToken, getCurrentPage, limit, tt } from "@/lib";
@@ -12,7 +12,7 @@ export const getTeachingAssistants = async (
   search: string
 ) => {
   const accessToken = await getAccessToken();
-  const response = await instructorTaAPI.get(`/ta`, {
+  const response = await tasAPI.get(`/`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -83,47 +83,36 @@ export default async function Page({
   return (
     <>
       <div>
-        <h1 className='text-3xl font-bold mb-6'>
+        <h1 className="text-3xl font-bold mb-6">
           {t("instructorTa.assistantTitle")}
         </h1>
-        <div className='flex flex-col gap-2 mt-4'>
-          <div className='flex gap-4'>
-            <label className='flex flex-col'>
-              {t("filter.department")}
-              <SelectFilter name={"department"} options={departmentOptions} />
-            </label>
-            <label className='flex flex-col'>
-              {t("filter.search")}
-              <TextFilter name={"search"} />
-            </label>
-          </div>
-        </div>
-        <div className='space-y-4 mt-4'>
+        <SelectFilter name="department" options={departmentOptions} />
+        <div className="space-y-4 mt-4">
           {teachingAssistants.map((ta: any, i: number) => (
             <div
-              className='border border-gray-300 p-4 rounded-lg shadow-md'
+              className="border border-gray-300 p-4 rounded-lg shadow-md"
               key={i}
             >
-              <p className='text-gray-700 mb-2'>
+              <p className="text-gray-700 mb-2">
                 <b>{t("instructorTa.name")}: </b>
                 {ta.fullName}
               </p>
-              <p className='text-gray-700 mb-2'>
+              <p className="text-gray-700 mb-2">
                 <b>{t("instructorTa.email")}: </b>
                 {ta.email}
               </p>
-              <p className='text-gray-700 mb-2'>
+              <p className="text-gray-700 mb-2">
                 <b>{t("instructorTa.department")}: </b>
                 {tt(locale, ta.department.name)}
               </p>
               {ta.officeHours && (
-                <p className='text-gray-700 mb-2'>
+                <p className="text-gray-700 mb-2">
                   <b>{t("instructorTa.officeHours")}: </b>
                   {ta.officeHours}
                 </p>
               )}
               {ta.office && (
-                <p className='text-gray-700 mb-2'>
+                <p className="text-gray-700 mb-2">
                   <b>{t("instructorTa.office")}: </b>
                   {ta.office}
                 </p>

@@ -44,6 +44,16 @@ export const instructorTaAPI = axios.create({
   validateStatus: (status) => status < 500,
 });
 
+export const instructorsAPI = axios.create({
+  baseURL: process.env.INSTRUCTORS_API_URL,
+  validateStatus: (status) => status < 500,
+});
+
+export const tasAPI = axios.create({
+  baseURL: process.env.TAS_API_URL,
+  validateStatus: (status) => status < 500,
+});
+
 export const departmentEnrollmentAPI = axios.create({
   baseURL: process.env.DEPARTMENT_ENROLLMENT_API_URL,
   validateStatus: (status) => status < 500,

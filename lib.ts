@@ -4,6 +4,8 @@ import { twMerge } from "tailwind-merge";
 import jwt from "jsonwebtoken";
 import { redirect } from "next/navigation";
 
+export type SupportedLocale = "en" | "ar";
+
 export function cn(...args: ClassValue[]) {
   return twMerge(clsx(args));
 }
