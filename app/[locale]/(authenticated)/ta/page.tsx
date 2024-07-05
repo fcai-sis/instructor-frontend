@@ -1,6 +1,6 @@
 import { departmentsAPI, instructorTaAPI } from "@/api";
 import Pagination from "@/components/Pagination";
-import { SelectFilter } from "@/components/SetQueryFilter";
+import { SelectFilter, TextFilter } from "@/components/SetQueryFilter";
 import { getAccessToken, getCurrentPage, limit, tt } from "@/lib";
 import { getCurrentLocale, getI18n } from "@/locales/server";
 import { DepartmentType } from "@fcai-sis/shared-models";
@@ -8,17 +8,19 @@ import { revalidatePath } from "next/cache";
 
 export const getTeachingAssistants = async (
   page: number,
-  department: DepartmentType
+  department: DepartmentType,
+  search: string
 ) => {
   const accessToken = await getAccessToken();
-  const response = await instructorTaAPI.get(`/teacherAssistants/read`, {
+  const response = await instructorTaAPI.get(`/ta`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
     params: {
-      skip: page * limit - limit,
+      page,
       limit,
       department,
+      search,
     },
   });
 
@@ -48,14 +50,20 @@ export const getDepartments = async () => {
 
 export default async function Page({
   searchParams,
-}: Readonly<{ searchParams: { page: string; department: string } }>) {
+}: Readonly<{
+  searchParams: { page: string; department: string; search: string };
+}>) {
   const page = getCurrentPage(searchParams);
   const t = await getI18n();
   const locale = getCurrentLocale();
   const departmentSelected =
     searchParams.department as unknown as DepartmentType;
 
-  const response = await getTeachingAssistants(page, departmentSelected);
+  const response = await getTeachingAssistants(
+    page,
+    departmentSelected,
+    searchParams.search
+  );
   const teachingAssistants = response.teachingAssistants;
   const total = response.totalTeachingAssistants;
 
@@ -63,11 +71,11 @@ export default async function Page({
 
   const departmentOptions = [
     {
-      label: "All",
+      label: tt(locale, { en: "All Departments", ar: "جميع الأقسام" }),
       value: "",
     },
     ...departments.map((department: any) => ({
-      label: department.name.en,
+      label: tt(locale, department.name),
       value: department.code,
     })),
   ];
@@ -78,7 +86,18 @@ export default async function Page({
         <h1 className='text-3xl font-bold mb-6'>
           {t("instructorTa.assistantTitle")}
         </h1>
-        <SelectFilter name='department' options={departmentOptions} />
+        <div className='flex flex-col gap-2 mt-4'>
+          <div className='flex gap-4'>
+            <label className='flex flex-col'>
+              {t("filter.department")}
+              <SelectFilter name={"department"} options={departmentOptions} />
+            </label>
+            <label className='flex flex-col'>
+              {t("filter.search")}
+              <TextFilter name={"search"} />
+            </label>
+          </div>
+        </div>
         <div className='space-y-4 mt-4'>
           {teachingAssistants.map((ta: any, i: number) => (
             <div
