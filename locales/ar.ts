@@ -161,6 +161,7 @@ export default {
     department: "القسم",
     gender: "الجنس",
     level: "المستوى",
+    title: "اللقب",
   },
   teachings: {
     updateGrade: "تحديث الدرجة",

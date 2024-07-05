@@ -160,6 +160,7 @@ export default {
     department: "Department",
     gender: "Gender",
     level: "Level",
+    title: "Title",
   },
   teachings: {
     updateGrade: "Update Grade",

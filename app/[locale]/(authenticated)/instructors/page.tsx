@@ -6,6 +6,7 @@ import { getCurrentLocale, getI18n } from "@/locales/server";
 import {
   DepartmentType,
   localizedTitleEnum,
+  TitleEnum,
   TitleEnumType,
 } from "@fcai-sis/shared-models";
 import { revalidatePath } from "next/cache";
@@ -13,7 +14,8 @@ import { revalidatePath } from "next/cache";
 export const getInstructors = async (
   page: number,
   department: DepartmentType,
-  search: string
+  search: string,
+  title: string
 ) => {
   const accessToken = await getAccessToken();
   const response = await instructorsAPI.get(`/`, {
@@ -25,6 +27,7 @@ export const getInstructors = async (
       limit,
       department,
       search,
+      title,
     },
   });
   console.log(response.data);
@@ -54,7 +57,12 @@ export const getDepartments = async () => {
 export default async function Page({
   searchParams,
 }: Readonly<{
-  searchParams: { page: string; department: string; search: string };
+  searchParams: {
+    page: string;
+    department: string;
+    search: string;
+    title: string;
+  };
 }>) {
   const page = getCurrentPage(searchParams);
   const t = await getI18n();
@@ -65,7 +73,8 @@ export default async function Page({
   const response = await getInstructors(
     page,
     departmentSelected,
-    searchParams.search
+    searchParams.search,
+    searchParams.title
   );
   const instructors = response.instructors;
   const total = response.totalInstructors;
@@ -84,13 +93,39 @@ export default async function Page({
     })),
   ];
 
+  const titleOptions = [
+    {
+      label: tt(locale, { en: "All Titles", ar: "الكل" }),
+      value: "",
+    },
+    ...TitleEnum.map((title: any) => ({
+      label: tt(locale, localizedTitleEnum[title as TitleEnumType]),
+      value: title,
+    })),
+  ];
+
   return (
     <>
       <div>
         <h1 className='text-3xl font-bold mb-6'>
           {t("instructorTa.instructorTitle")}
         </h1>
-        <SelectFilter name='department' options={departmentOptions} />
+        <div className='flex flex-col gap-2 mt-4'>
+          <div className='flex gap-4'>
+            <label className='flex flex-col'>
+              {t("filter.department")}
+              <SelectFilter name={"department"} options={departmentOptions} />
+            </label>
+            <label className='flex flex-col'>
+              {t("filter.title")}
+              <SelectFilter name={"title"} options={titleOptions} />
+            </label>
+            <label className='flex flex-col'>
+              {t("filter.search")}
+              <TextFilter name={"search"} />
+            </label>
+          </div>
+        </div>
         <div className='space-y-4 mt-4'>
           {instructors.map((instructor: any, i: number) => (
             <div
