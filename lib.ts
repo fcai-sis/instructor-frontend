@@ -53,3 +53,9 @@ export function tt(
  * The number of items to show per page.
  */
 export const limit = 2;
+
+export async function getRole() {
+  const session = await getServerSession();
+  const payload = tokenPayload(session);
+  return payload.role;
+}
