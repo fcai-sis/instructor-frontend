@@ -22,7 +22,7 @@ export default {
     profile: "Profile",
     more: "More",
     signOut: "Sign Out",
-    graduation: "Create Graduation Project Team",
+    graduation: "Graduation Project Teams",
     assignHall: "Assign Students to Halls",
     top: "Top Students",
     courses: "View all courses",

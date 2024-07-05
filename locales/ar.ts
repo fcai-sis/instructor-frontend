@@ -23,7 +23,7 @@ export default {
     teacherAssistants: "المعيدين",
     more: "المزيد",
     signOut: "تسجيل الخروج",
-    graduation: "إنشاء فريق مشروع التخرج",
+    graduation: "فريق مشروع التخرج",
     assignHall: "تعيين الطلاب للقاعات",
     top: "الطلاب المتميزين",
     courses: "عرض جميع المقررات",
