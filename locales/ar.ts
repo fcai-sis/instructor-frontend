@@ -175,6 +175,7 @@ export default {
     instructorTitle: "الدكاترة",
     assistantTitle: "المعيدين",
     name: "الاسم",
+    title: "اللقب",
     email: "البريد الإلكتروني",
     officeHours: "ساعات العمل",
     office: "المكتب",

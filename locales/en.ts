@@ -174,6 +174,7 @@ export default {
     instructorTitle: "Instructors",
     assistantTitle: "Teaching Assistants",
     name: "Name",
+    title: "Title",
     email: "Email",
     department: "Department",
     officeHours: "Office Hours",

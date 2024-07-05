@@ -3,7 +3,11 @@ import Pagination from "@/components/Pagination";
 import { SelectFilter, TextFilter } from "@/components/SetQueryFilter";
 import { getAccessToken, getCurrentPage, limit, tt } from "@/lib";
 import { getCurrentLocale, getI18n } from "@/locales/server";
-import { DepartmentType } from "@fcai-sis/shared-models";
+import {
+  DepartmentType,
+  localizedTitleEnum,
+  TitleEnumType,
+} from "@fcai-sis/shared-models";
 import { revalidatePath } from "next/cache";
 
 export const getTeachingAssistants = async (
@@ -83,36 +87,40 @@ export default async function Page({
   return (
     <>
       <div>
-        <h1 className="text-3xl font-bold mb-6">
+        <h1 className='text-3xl font-bold mb-6'>
           {t("instructorTa.assistantTitle")}
         </h1>
-        <SelectFilter name="department" options={departmentOptions} />
-        <div className="space-y-4 mt-4">
+        <SelectFilter name='department' options={departmentOptions} />
+        <div className='space-y-4 mt-4'>
           {teachingAssistants.map((ta: any, i: number) => (
             <div
-              className="border border-gray-300 p-4 rounded-lg shadow-md"
+              className='border border-gray-300 p-4 rounded-lg shadow-md'
               key={i}
             >
-              <p className="text-gray-700 mb-2">
+              <p className='text-gray-700 mb-2'>
                 <b>{t("instructorTa.name")}: </b>
                 {ta.fullName}
               </p>
-              <p className="text-gray-700 mb-2">
+              <p className='text-gray-700 mb-2'>
+                <b>{t("instructorTa.title")}: </b>
+                {tt(locale, localizedTitleEnum[ta.title as TitleEnumType])}
+              </p>
+              <p className='text-gray-700 mb-2'>
                 <b>{t("instructorTa.email")}: </b>
                 {ta.email}
               </p>
-              <p className="text-gray-700 mb-2">
+              <p className='text-gray-700 mb-2'>
                 <b>{t("instructorTa.department")}: </b>
                 {tt(locale, ta.department.name)}
               </p>
               {ta.officeHours && (
-                <p className="text-gray-700 mb-2">
+                <p className='text-gray-700 mb-2'>
                   <b>{t("instructorTa.officeHours")}: </b>
                   {ta.officeHours}
                 </p>
               )}
               {ta.office && (
-                <p className="text-gray-700 mb-2">
+                <p className='text-gray-700 mb-2'>
                   <b>{t("instructorTa.office")}: </b>
                   {ta.office}
                 </p>
