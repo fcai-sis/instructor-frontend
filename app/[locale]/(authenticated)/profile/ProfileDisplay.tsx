@@ -5,12 +5,13 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
 import { updateProfileAction } from "./actions";
-import { InstructorType } from "@fcai-sis/shared-models";
+import { InstructorType, TitleEnumType } from "@fcai-sis/shared-models";
 import { useCurrentLocale, useI18n } from "@/locales/client";
 import { tt } from "@/lib";
 
 const updateProfileFormSchema = z.object({
   fullName: z.string(),
+  title: z.string(),
   office: z.string(),
   officeHoursFrom: z.string(),
   officeHoursTo: z.string(),
@@ -21,9 +22,13 @@ export type updateProfileValues = z.infer<typeof updateProfileFormSchema>;
 export default function UpdateProfileForm({
   editableFields,
   viewableFields,
+  titleEnums,
+  localizedTitleEnum,
 }: {
   editableFields: any;
   viewableFields: any;
+  titleEnums: any;
+  localizedTitleEnum: any;
 }) {
   const locale = useCurrentLocale();
   const t = useI18n();
@@ -45,6 +50,7 @@ export default function UpdateProfileForm({
     resolver: zodResolver(updateProfileFormSchema),
     defaultValues: {
       fullName: profileFieldsLookup["fullName"],
+      title: profileFieldsLookup["title"],
       office: profileFieldsLookup["office"],
       officeHoursFrom: profileFieldsLookup["officeHoursFrom"],
       officeHoursTo: profileFieldsLookup["officeHoursTo"],
@@ -88,6 +94,29 @@ export default function UpdateProfileForm({
             />
             {errors.fullName && (
               <p className='text-red-600'>{errors.fullName?.message}</p>
+            )}
+          </div>
+
+          <div className='flex flex-col'>
+            <label className='text-lg font-medium'>
+              {tt(locale, {
+                en: "Title",
+                ar: "اللقب",
+              })}
+            </label>
+            <select
+              {...register("title")}
+              defaultValue={profileFieldsLookup["title"]}
+              className='p-2 border border-gray-300 rounded-lg'
+            >
+              {titleEnums.map((title: any) => (
+                <option key={title.value} value={title}>
+                  {tt(locale, localizedTitleEnum[title as TitleEnumType])}
+                </option>
+              ))}
+            </select>
+            {errors.title && (
+              <p className='text-red-600'>{errors.title?.message}</p>
             )}
           </div>
 
