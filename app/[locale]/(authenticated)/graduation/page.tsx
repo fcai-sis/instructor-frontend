@@ -1,8 +1,27 @@
-import { getAccessToken } from "@/lib";
+import { getAccessToken, tokenPayload, tt } from "@/lib";
 import CreateGraduationForm from "./CreateGraduationForm";
 import { revalidatePath } from "next/cache";
 import { graduationAPI } from "@/api";
 import { I18nProviderClient } from "@/locales/client";
+import { getServerSession } from "next-auth";
+import { InstructorModel } from "@fcai-sis/shared-models";
+import { getCurrentLocale } from "@/locales/server";
+import dbConnect from "@/database";
+
+export const getAuthenticatedInstructor = async () => {
+  const session = await getServerSession();
+  const payload = tokenPayload(session);
+  await dbConnect();
+  const instructor = await InstructorModel.findOne({
+    user: payload.userId,
+  });
+
+  if (!instructor) {
+    return null;
+  }
+  revalidatePath("/graduation");
+  return instructor;
+};
 
 export const getGraduationProjectEnrollments = async () => {
   const accessToken = await getAccessToken();
@@ -34,7 +53,7 @@ export const getGraduationProjectTeachings = async () => {
     },
   });
 
-  console.log(response.status, response.data);
+  // console.log(response.status, response.data);
 
   if (response.status !== 200) {
     revalidatePath("/graduation");
@@ -49,9 +68,17 @@ export const getGraduationProjectTeachings = async () => {
   return response.data;
 };
 
-export default async function Page({
-  params: { locale },
-}: Readonly<{ params: { locale: string } }>) {
+export default async function Page() {
+  const locale = getCurrentLocale();
+  const me = await getAuthenticatedInstructor();
+  if (!me) {
+    return (
+      <div>
+        <h1>Not Authorized</h1>
+      </div>
+    );
+  }
+
   const { enrollments } = await getGraduationProjectEnrollments();
   const { instructorTeachings, taTeachings } =
     await getGraduationProjectTeachings();
@@ -63,6 +90,7 @@ export default async function Page({
           enrollments={enrollments}
           instructorTeachings={instructorTeachings}
           assistantTeachings={taTeachings}
+          me={JSON.stringify(me)}
         />
       </I18nProviderClient>
     </>

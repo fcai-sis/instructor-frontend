@@ -15,7 +15,7 @@ const createGraduationFormSchema = z.object({
     .nonempty(),
   assistantTeachings: z
     .array(z.object({ assistantTeaching: z.string() }))
-    .nonempty(),
+    .optional(),
 });
 
 export type CreateGraduationFormValues = z.infer<
@@ -26,22 +26,25 @@ export default function CreateGraduationForm({
   enrollments,
   instructorTeachings,
   assistantTeachings,
+  me,
 }: {
   enrollments: any[];
   instructorTeachings: any[];
   assistantTeachings: any[];
+  me: any;
 }) {
   const t = useI18n();
   const router = useRouter();
   const [selectedEnrollments, setSelectedEnrollments] = useState<string[]>([]);
   const [selectedInstructorTeachings, setSelectedInstructorTeachings] =
-    useState<string[]>([]);
+    useState<string[]>([me._id]);
   const [selectedAssistantTeachings, setSelectedAssistantTeachings] = useState<
     string[]
   >([]);
   const [enrollmentSearch, setEnrollmentSearch] = useState("");
   const [instructorTeachingSearch, setInstructorTeachingSearch] = useState("");
   const [assistantTeachingSearch, setAssistantTeachingSearch] = useState("");
+  const [showAssistantTeachings, setShowAssistantTeachings] = useState(false);
 
   const {
     handleSubmit,
@@ -52,7 +55,7 @@ export default function CreateGraduationForm({
     resolver: zodResolver(createGraduationFormSchema),
     defaultValues: {
       enrollments: [{ enrollment: "" }],
-      instructorTeachings: [{ instructorTeaching: "" }],
+      instructorTeachings: [{ instructorTeaching: me._id }],
       assistantTeachings: [{ assistantTeaching: "" }],
     },
   });
@@ -124,6 +127,9 @@ export default function CreateGraduationForm({
     (instructorTeaching) =>
       instructorTeaching.instructor.fullName
         .toLowerCase()
+        .includes(instructorTeachingSearch.toLowerCase()) ||
+      instructorTeaching.instructor.email
+        .toLowerCase()
         .includes(instructorTeachingSearch.toLowerCase())
   );
 
@@ -131,11 +137,14 @@ export default function CreateGraduationForm({
     (assistantTeaching) =>
       assistantTeaching.ta.fullName
         .toLowerCase()
+        .includes(assistantTeachingSearch.toLowerCase()) ||
+      assistantTeaching.ta.email
+        .toLowerCase()
         .includes(assistantTeachingSearch.toLowerCase())
   );
 
   return (
-    <div className='flex flex-col items-center justify-center w-full max-w-3xl mx-auto my-8 p-6 bg-white border border-slate-200 rounded-lg shadow-md'>
+    <div className='flex flex-col items-center justify-center max-w-3xl mx-auto my-8 p-6 bg-white border border-slate-200 rounded-lg shadow-md'>
       <h1 className='text-2xl font-bold mb-6'>{t("graduation.title")}</h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -236,7 +245,8 @@ export default function CreateGraduationForm({
                       key={instructorTeaching._id}
                       value={instructorTeaching._id}
                     >
-                      {instructorTeaching.instructor.fullName}
+                      {instructorTeaching.instructor.fullName} (
+                      {instructorTeaching.instructor.email})
                     </option>
                   ))}
               </select>
@@ -267,81 +277,100 @@ export default function CreateGraduationForm({
           </button>
         </div>
 
-        <div className='flex flex-col space-y-2'>
-          <label className='font-bold'>
-            {t("graduation.assistantTeachings")}
-          </label>
-          <input
-            type='text'
-            placeholder={t("graduation.search")}
-            value={assistantTeachingSearch}
-            onChange={(e) => setAssistantTeachingSearch(e.target.value)}
-            className='w-full p-2 border border-slate-300 rounded-lg mb-2'
-          />
-          {assistantFields.map((field, index) => (
-            <div key={field.id} className='flex gap-2'>
-              <select
-                {...register(
-                  `assistantTeachings.${index}.assistantTeaching` as const
-                )}
-                defaultValue={field.assistantTeaching}
-                onChange={(e) =>
-                  handleAssistantTeachingChange(index, e.target.value)
-                }
-                className='w-full p-2 border border-slate-300 rounded-lg'
-              >
-                <option value='' disabled>
-                  {t("graduation.selectAssistantTeaching")}
-                </option>
-                {filteredAssistantTeachings
-                  .filter(
-                    (assistantTeaching) =>
-                      !selectedAssistantTeachings.includes(
-                        assistantTeaching._id
-                      ) ||
-                      assistantTeaching._id ===
-                        selectedAssistantTeachings[index]
-                  )
-                  .map((assistantTeaching) => (
-                    <option
-                      key={assistantTeaching._id}
-                      value={assistantTeaching._id}
-                    >
-                      {assistantTeaching.ta.fullName}
-                    </option>
-                  ))}
-              </select>
-              <button
-                type='button'
-                onClick={() => {
-                  removeAssistant(index);
-                  const newSelectedAssistantTeachings = [
-                    ...selectedAssistantTeachings,
-                  ];
-                  newSelectedAssistantTeachings.splice(index, 1);
-                  setSelectedAssistantTeachings(newSelectedAssistantTeachings);
-                }}
-                className='btn-danger flex justify-center'
-              >
-                {t("general.remove")}
-              </button>
-            </div>
-          ))}
-          <button
-            type='button'
-            onClick={() => appendAssistant({ assistantTeaching: "" })}
-            className='btn flex justify-center'
-          >
-            {t("graduation.addAssistantTeaching")}
-          </button>
-        </div>
+        {showAssistantTeachings && (
+          <div className='flex flex-col space-y-2'>
+            <label className='font-bold'>
+              {t("graduation.assistantTeachings")}
+            </label>
+            <input
+              type='text'
+              placeholder={t("graduation.search")}
+              value={assistantTeachingSearch}
+              onChange={(e) => setAssistantTeachingSearch(e.target.value)}
+              className='w-full p-2 border border-slate-300 rounded-lg mb-2'
+            />
+            {assistantFields.map((field, index) => (
+              <div key={field.id} className='flex gap-2'>
+                <select
+                  {...register(
+                    `assistantTeachings.${index}.assistantTeaching` as const
+                  )}
+                  defaultValue={field.assistantTeaching}
+                  onChange={(e) =>
+                    handleAssistantTeachingChange(index, e.target.value)
+                  }
+                  className='w-full p-2 border border-slate-300 rounded-lg'
+                >
+                  <option value='' disabled>
+                    {t("graduation.selectAssistantTeaching")}
+                  </option>
+                  {filteredAssistantTeachings
+                    .filter(
+                      (assistantTeaching) =>
+                        !selectedAssistantTeachings.includes(
+                          assistantTeaching._id
+                        ) ||
+                        assistantTeaching._id ===
+                          selectedAssistantTeachings[index]
+                    )
+                    .map((assistantTeaching) => (
+                      <option
+                        key={assistantTeaching._id}
+                        value={assistantTeaching._id}
+                      >
+                        {assistantTeaching.ta.fullName} (
+                        {assistantTeaching.ta.email})
+                      </option>
+                    ))}
+                </select>
+                <button
+                  type='button'
+                  onClick={() => {
+                    removeAssistant(index);
+                    const newSelectedAssistantTeachings = [
+                      ...selectedAssistantTeachings,
+                    ];
+                    newSelectedAssistantTeachings.splice(index, 1);
+                    setSelectedAssistantTeachings(
+                      newSelectedAssistantTeachings
+                    );
+                  }}
+                  className='btn-danger flex justify-center'
+                >
+                  {t("general.remove")}
+                </button>
+              </div>
+            ))}
+            <button
+              type='button'
+              onClick={() => appendAssistant({ assistantTeaching: "" })}
+              className='btn flex justify-center'
+            >
+              {t("graduation.addAssistantTeaching")}
+            </button>
+          </div>
+        )}
 
-        <div className='flex items-center justify-between mt-4'>
-          <button className='btn' type='submit' disabled={isSubmitting}>
+        <button
+          type='button'
+          onClick={() => setShowAssistantTeachings(!showAssistantTeachings)}
+          className='btn-secondary flex justify-center'
+        >
+          {showAssistantTeachings
+            ? t("graduation.hideTeachingAssistants")
+            : t("graduation.showTeachingAssistants")}
+        </button>
+
+        <div className='flex justify-between'>
+          <button
+            className='btn flex justify-center'
+            type='submit'
+            disabled={isSubmitting}
+          >
             {isSubmitting ? t("general.loading") : t("general.submit")}
           </button>
           <button
-            className='btn-secondary'
+            className='btn-secondary flex justify-center'
             type='button'
             onClick={(e) => {
               e.preventDefault();

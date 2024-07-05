@@ -155,6 +155,8 @@ export default {
       createFailed: "فشل إنشاء الفريق",
     },
     search: "بحث",
+    showTeachingAssistants: "عرض المعيدين",
+    hideTeachingAssistants: "إخفاء المعيدين",
   },
   filter: {
     search: "بحث",
