@@ -47,7 +47,7 @@ export default function UpdateGradeForm({ enrollment }: { enrollment: any }) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
+    <form onSubmit={handleSubmit(onSubmit)} className='flex items-end gap-6'>
       <div className='flex flex-col'>
         <label className='mb-1 font-medium'>
           {t("teachings.termWorkGrade")}
@@ -79,11 +79,7 @@ export default function UpdateGradeForm({ enrollment }: { enrollment: any }) {
         )}
       </div>
       <div className='flex justify-center'>
-        <button
-          type='submit'
-          className='btn flex justify-center'
-          disabled={isSubmitting}
-        >
+        <button type='submit' className='btn h-min' disabled={isSubmitting}>
           {isSubmitting ? t("general.loading") : t("teachings.updateGrade")}
         </button>
       </div>

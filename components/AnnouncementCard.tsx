@@ -26,24 +26,24 @@ export default async function AnnouncementCard({
 
   const icon =
     announcement.severity === AnnouncementSeveritiesEnum[0] ? (
-      <small className="bg-blue-100 text-blue-500 rounded-full px-2 py-1 flex gap-2">
-        <InfoCircle className="[&>*]:stroke-blue-500" />
+      <small className='bg-blue-100 text-blue-500 rounded-full px-2 py-1 flex gap-2'>
+        <InfoCircle className='[&>*]:stroke-blue-500' />
         {tt(locale, {
           en: "Info",
           ar: "معلومة",
         })}
       </small>
     ) : announcement.severity === AnnouncementSeveritiesEnum[1] ? (
-      <small className="bg-yellow-100 text-yellow-500 rounded-full px-2 py-1 flex gap-2">
-        <WarningTriangle className="[&>*]:stroke-yellow-500" />
+      <small className='bg-yellow-100 text-yellow-500 rounded-full px-2 py-1 flex gap-2'>
+        <WarningTriangle className='[&>*]:stroke-yellow-500' />
         {tt(locale, {
           en: "Warning",
           ar: "تحذير",
         })}
       </small>
     ) : (
-      <small className="bg-red-100 text-red-500 rounded-full px-2 py-1 flex gap-2">
-        <WarningHexagon className="[&>*]:stroke-red-500" />
+      <small className='bg-red-100 text-red-500 rounded-full px-2 py-1 flex gap-2'>
+        <WarningHexagon className='[&>*]:stroke-red-500' />
         {tt(locale, {
           en: "Important",
           ar: "مهم",
@@ -55,50 +55,55 @@ export default async function AnnouncementCard({
     <div
       className={`rounded-lg w-full p-4 bg-white border border-slate-200 my-2`}
     >
-      <div className="flex items-center gap-2">
+      <div className='flex items-center gap-2'>
         {icon}
         <h5>{announcement.title}</h5>
       </div>
-      <p className="text-gray-600 my-4">{announcement.content}</p>
-      <div className="flex flex-wrap gap-2">
+      <p className='text-gray-600 my-4'>{announcement.content}</p>
+      <div className='flex flex-wrap gap-2'>
         {announcement.levels ? (
-          announcement.levels.map((level: any) => (
-            <small
-              key={level}
-              className="rounded-lg px-2 py-1 border border-blue-500 text-blue-500"
-            >
-              {tt(locale, localizedLevel(level))}
-            </small>
+          announcement.levels.map((level: any, index: number) => (
+            <LevelChip key={index} level={level} />
           ))
         ) : (
-          <small className="rounded-lg px-2 py-1 border border-blue-500 text-blue-500">
-            {tt(locale, {
-              en: "All Levels",
-              ar: "جميع المستويات",
-            })}
-          </small>
+          <LevelChip level={0} />
         )}
         {announcement.departments ? (
           announcement.departments.map((department: any) => (
-            <small
-              key={department.code}
-              className="rounded-lg px-2 py-1 border border-blue-500 text-blue-500"
-            >
-              {tt(locale, department.name)}
-            </small>
+            <DepartmentChip key={department.code} department={department} />
           ))
         ) : (
-          <small className="rounded-lg px-2 py-1 border border-blue-500 text-blue-500">
-            {tt(locale, {
-              en: "All Departments",
-              ar: "جميع الأقسام",
-            })}
-          </small>
+          <DepartmentChip
+            department={{
+              name: {
+                en: "All Departments",
+                ar: "جميع الأقسام",
+              },
+            }}
+          />
         )}
       </div>
-      <div className="w-full mt-4 text-start text-gray-500">
+      <div className='w-full mt-4 text-start text-gray-500'>
         <CreatedAt date={announcement.createdAt} />
       </div>
     </div>
+  );
+}
+
+export function DepartmentChip({ department }: { department: any }) {
+  const locale = getCurrentLocale();
+  return (
+    <small className='rounded-lg px-2 py-1 border border-blue-500 text-blue-500'>
+      {tt(locale, department.name)}
+    </small>
+  );
+}
+
+export function LevelChip({ level }: { level: number }) {
+  const locale = getCurrentLocale();
+  return (
+    <small className='rounded-lg px-2 py-1 border border-blue-500 text-blue-500'>
+      {tt(locale, localizedLevel(level))}
+    </small>
   );
 }

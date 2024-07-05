@@ -22,7 +22,7 @@ export default async function Page({
   );
 
   return (
-    <div className='flex flex-col w-2/6 mx-auto p-4'>
+    <div className='flex flex-col w-full p-4'>
       <h1 className='text-3xl font-bold mb-6'>
         {tt(locale, {
           en: "Students in",
@@ -31,21 +31,42 @@ export default async function Page({
         {"  "}
         {code}
       </h1>
-      <div className='space-y-4'>
-        {courseEnrollments.map((enrollment: any) => (
-          <div
-            key={enrollment.student.studentId}
-            className='border border-gray-300 p-4 rounded-lg shadow-md'
-          >
-            <h2 className='text-xl font-bold mb-2'>
-              {enrollment.student.fullName}
-            </h2>
-            <p className='text-gray-700 mb-4'>{enrollment.student.studentId}</p>
-            <I18nProviderClient locale={locale}>
-              <UpdateGradeForm enrollment={enrollment} />
-            </I18nProviderClient>
-          </div>
-        ))}
+      <div className='overflow-x-auto w-full'>
+        <table className='min-w-full bg-white border border-gray-200'>
+          <thead>
+            <tr>
+              <th className='flex justify-start px-4 py-2 border-b text-left'>
+                {tt(locale, { en: "Student Name", ar: "اسم الطالب" })}
+              </th>
+              <th className='px-4 py-2 border-b text-left'>
+                {tt(locale, { en: "Student ID", ar: "رقم الطالب" })}
+              </th>
+              <th className='flex justify-center px-4 py-2 border-b text-left'>
+                {tt(locale, { en: "Grades", ar: "الدرجات" })}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {courseEnrollments.map((enrollment: any, index: number) => (
+              <tr
+                key={enrollment.student.studentId}
+                className={index % 2 === 0 ? "bg-gray-100" : ""}
+              >
+                <td className='px-4 py-2 border-b'>
+                  {enrollment.student.fullName}
+                </td>
+                <td className='px-4 py-2 border-b'>
+                  {enrollment.student.studentId}
+                </td>
+                <td className='flex justify-center px-4 py-2 border-b'>
+                  <I18nProviderClient locale={locale}>
+                    <UpdateGradeForm enrollment={enrollment} />
+                  </I18nProviderClient>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
