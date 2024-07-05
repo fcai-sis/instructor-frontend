@@ -140,6 +140,8 @@ export default {
   },
   graduation: {
     title: "Create a Graduation Project Team",
+    updateTitle: "Update Graduation Project Team",
+    projectTitle: "Project Title",
     enrollments: "Students",
     instructorTeachings: "Instructors",
     assistantTeachings: "TAs",
@@ -150,12 +152,21 @@ export default {
     addInstructorTeaching: "Add Instructor",
     addAssistantTeaching: "Add TA",
     success: "Team created successfully",
+    updateSuccess: "Team updated successfully",
     error: {
       createFailed: "Failed to create team",
     },
     search: "Search",
     showTeachingAssistants: "Show TAs",
     hideTeachingAssistants: "Hide TAs",
+    delete: "Delete Team",
+    deleteSuccess: "Team deleted successfully",
+    deleteConfirm: "Are you sure you want to delete this team?",
+    team: "Team",
+    supervisedBy: "Supervised by",
+    assist: "Assisted by",
+    updateTitleMini: "Update Team",
+
   },
   filter: {
     search: "Search",

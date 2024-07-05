@@ -4,61 +4,78 @@ import { useRouter } from "next/navigation";
 import { useFieldArray, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
-import { createGraduationTeamAction } from "./actions";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useI18n } from "@/locales/client";
+import { error } from "console";
+import { updateGraduationTeamAction } from "../actions";
 
-const createGraduationFormSchema = z.object({
-  projectTitle: z.string(),
-  enrollments: z.array(z.object({ enrollment: z.string() })).nonempty(),
+const updateGraduationFormSchema = z.object({
+  projectTitle: z.string().min(1, { message: "Please enter a project title" }),
+  enrollments: z.array(z.object({ enrollment: z.string() })),
   instructorTeachings: z
     .array(z.object({ instructorTeaching: z.string() }))
     .nonempty(),
   assistantTeachings: z
     .array(z.object({ assistantTeaching: z.string() }))
     .optional(),
+  group: z.string(),
 });
 
-export type CreateGraduationFormValues = z.infer<
-  typeof createGraduationFormSchema
+export type UpdateGraduationFormValues = z.infer<
+  typeof updateGraduationFormSchema
 >;
 
-export default function CreateGraduationForm({
+export default function UpdateGraduationForm({
   enrollments,
   instructorTeachings,
   assistantTeachings,
-  me,
+  group,
 }: {
   enrollments: any[];
   instructorTeachings: any[];
   assistantTeachings: any[];
-  me: any;
+  group: any;
 }) {
   const t = useI18n();
   const router = useRouter();
-  const [selectedEnrollments, setSelectedEnrollments] = useState<string[]>([]);
+
+  // Initialize state based on the group prop
+  const [selectedEnrollments, setSelectedEnrollments] = useState<string[]>(
+    group.enrollments.map((e: any) => e) || []
+  );
+
   const [selectedInstructorTeachings, setSelectedInstructorTeachings] =
-    useState<string[]>([me._id]);
+    useState<string[]>(group.instructorTeachings.map((i: any) => i) || []);
   const [selectedAssistantTeachings, setSelectedAssistantTeachings] = useState<
     string[]
-  >([]);
+  >(group.assistantTeachings.map((a: any) => a) || []);
   const [enrollmentSearch, setEnrollmentSearch] = useState("");
   const [instructorTeachingSearch, setInstructorTeachingSearch] = useState("");
   const [assistantTeachingSearch, setAssistantTeachingSearch] = useState("");
-  const [showAssistantTeachings, setShowAssistantTeachings] = useState(false);
+  const [showAssistantTeachings, setShowAssistantTeachings] = useState(
+    group.assistantTeachings && group.assistantTeachings.length > 0
+  );
 
   const {
     handleSubmit,
     register,
     control,
     formState: { errors, isSubmitting },
-  } = useForm<CreateGraduationFormValues>({
-    resolver: zodResolver(createGraduationFormSchema),
+  } = useForm<UpdateGraduationFormValues>({
+    resolver: zodResolver(updateGraduationFormSchema),
     defaultValues: {
-      projectTitle: "",
-      enrollments: [{ enrollment: "" }],
-      instructorTeachings: [{ instructorTeaching: me._id }],
-      assistantTeachings: [{ assistantTeaching: "" }],
+      projectTitle: group.projectTitle,
+      enrollments: group.enrollments.map((e: any) => ({
+        enrollment: e._id,
+      })),
+      instructorTeachings: group.instructorTeachings.map((i: any) => ({
+        instructorTeaching: i._id,
+      })),
+      assistantTeachings:
+        group.assistantTeachings?.map((a: any) => ({
+          assistantTeaching: a._id,
+        })) || [],
+      group: group._id,
     },
   });
 
@@ -107,16 +124,16 @@ export default function CreateGraduationForm({
     setSelectedAssistantTeachings(newSelectedAssistantTeachings);
   };
 
-  const onSubmit = async (values: CreateGraduationFormValues) => {
-    const createGraduationTeamResponse = await createGraduationTeamAction(
+  const onSubmit = async (values: UpdateGraduationFormValues) => {
+    const updateGraduationTeamResponse = await updateGraduationTeamAction(
       values
     );
 
-    if (!createGraduationTeamResponse.success) {
-      return toast.error(createGraduationTeamResponse.error?.message);
+    if (!updateGraduationTeamResponse.success) {
+      return toast.error(updateGraduationTeamResponse.error?.message);
     }
 
-    toast.success(t("graduation.success"));
+    toast.success(t("graduation.updateSuccess"));
     router.push(`/graduation`);
   };
 
@@ -147,7 +164,7 @@ export default function CreateGraduationForm({
 
   return (
     <div className='flex flex-col items-center justify-center max-w-3xl mx-auto my-8 p-6 bg-white border border-slate-200 rounded-lg shadow-md'>
-      <h1 className='text-2xl font-bold mb-6'>{t("graduation.title")}</h1>
+      <h1 className='text-2xl font-bold mb-6'>{t("graduation.updateTitle")}</h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className='flex flex-col space-y-4 w-full'
@@ -161,7 +178,7 @@ export default function CreateGraduationForm({
           />
 
           {errors.projectTitle && (
-            <span className='text-red-500'>{errors.projectTitle.message}</span>
+            <p className='text-red-600'>{errors.projectTitle.message}</p>
           )}
         </div>
         <div className='flex flex-col space-y-2'>
@@ -388,7 +405,7 @@ export default function CreateGraduationForm({
             type='button'
             onClick={(e) => {
               e.preventDefault();
-              router.push("/");
+              router.push("/graduation");
             }}
           >
             {t("general.back")}
