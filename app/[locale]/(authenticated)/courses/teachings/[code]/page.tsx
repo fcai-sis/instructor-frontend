@@ -3,6 +3,8 @@ import { getInstructorTeachings } from "../page";
 import UpdateGradeForm from "./UpdateGradeForm";
 import { getCurrentLocale } from "@/locales/server";
 import { tt } from "@/lib";
+import BatchAssignGrade from "./BatchAssignGrade";
+import DownloadGradeTemplate from "./DownloadGradeTemplate";
 
 export default async function Page({
   params: { code },
@@ -27,21 +29,24 @@ export default async function Page({
         {tt(locale, {
           en: "Students in",
           ar: "الطلاب المسجلين في",
-        })}
-        {"  "}
+        })}{" "}
         {code}
       </h1>
-      <div className='overflow-x-auto w-full'>
+      <I18nProviderClient locale={locale}>
+        <BatchAssignGrade course={code} />
+        <DownloadGradeTemplate />
+      </I18nProviderClient>
+      <div className='overflow-x-auto w-full mt-4'>
         <table className='min-w-full bg-white border border-gray-200'>
           <thead>
             <tr>
-              <th className='flex justify-start px-4 py-2 border-b text-left'>
+              <th className='px-4 py-2 border-b text-left'>
                 {tt(locale, { en: "Student Name", ar: "اسم الطالب" })}
               </th>
               <th className='px-4 py-2 border-b text-left'>
                 {tt(locale, { en: "Student ID", ar: "رقم الطالب" })}
               </th>
-              <th className='flex justify-center px-4 py-2 border-b text-left'>
+              <th className='px-4 py-2 border-b text-left'>
                 {tt(locale, { en: "Grades", ar: "الدرجات" })}
               </th>
             </tr>
@@ -58,7 +63,7 @@ export default async function Page({
                 <td className='px-4 py-2 border-b'>
                   {enrollment.student.studentId}
                 </td>
-                <td className='flex justify-center px-4 py-2 border-b'>
+                <td className='px-4 py-2 border-b'>
                   <I18nProviderClient locale={locale}>
                     <UpdateGradeForm enrollment={enrollment} />
                   </I18nProviderClient>

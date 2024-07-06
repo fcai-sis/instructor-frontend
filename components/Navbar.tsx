@@ -45,6 +45,9 @@ export default async function Navbar({ locale }: { locale: string }) {
             <Link href='/profile' className='block w-full'>
               {t("profile.title")}
             </Link>
+            <Link href='/chat' className='block w-full'>
+              {t("nav.chat")}
+            </Link>
             <Link href='/courses' className='block w-full'>
               {t("nav.courses")}
             </Link>

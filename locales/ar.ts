@@ -27,6 +27,7 @@ export default {
     assignHall: "تعيين الطلاب للقاعات",
     top: "الطلاب المتميزين",
     courses: "عرض جميع المقررات",
+    chat: "الدردشة",
   },
   pagination: {
     previous: "السابق",
@@ -182,6 +183,14 @@ export default {
     success: "تم تحديث الدرجة بنجاح",
     error: {
       updateFailed: "فشل تحديث الدرجة",
+    },
+    uploadGrade: {
+      upload: "تحميل الدرجة",
+      success: "تم تحميل الدرجة بنجاح",
+    },
+    downloadGradeTemplate: {
+      download: "تحميل قالب الدرجات",
+      success: "تم تحميل قالب الدرجات بنجاح",
     },
   },
   instructorTa: {

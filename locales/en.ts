@@ -26,6 +26,7 @@ export default {
     assignHall: "Assign Students to Halls",
     top: "Top Students",
     courses: "View all courses",
+    chat: "Chat",
   },
   pagination: {
     previous: "Previous",
@@ -166,7 +167,6 @@ export default {
     supervisedBy: "Supervised by",
     assist: "Assisted by",
     updateTitleMini: "Update Team",
-
   },
   filter: {
     search: "Search",
@@ -182,6 +182,14 @@ export default {
     success: "Grade updated successfully",
     error: {
       updateFailed: "Failed to update grade",
+    },
+    uploadGrade: {
+      upload: "Upload Grades",
+      success: "Grades uploaded successfully",
+    },
+    downloadGradeTemplate: {
+      download: "Download Grade Template",
+      success: "Grade template downloaded successfully",
     },
   },
   instructorTa: {

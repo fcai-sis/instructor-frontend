@@ -9,8 +9,8 @@ import { updateEnrollmentGrade } from "./actions";
 import { useI18n } from "@/locales/client";
 
 const updateGradeFormSchema = z.object({
-  termWorkGrade: z.number().int().min(0).max(40),
-  finalExamGrade: z.number().int().min(0).max(60),
+  termWorkGrade: z.number().int().min(0).max(40).optional(),
+  finalExamGrade: z.number().int().min(0).max(60).optional(),
   enrollment: z.string(),
 });
 
@@ -43,7 +43,7 @@ export default function UpdateGradeForm({ enrollment }: { enrollment: any }) {
     }
 
     toast.success(t("teachings.success"));
-    router.push(`/courses/teachings`);
+    router.push(`/courses/teachings/${enrollment.course.code}`);
   };
 
   return (
