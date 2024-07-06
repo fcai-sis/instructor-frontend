@@ -35,6 +35,8 @@ export const getMyGraduationProjects = async () => {
     },
   });
 
+  console.log("KOSSO EL SISI", response.data);
+
   if (response.status !== 200) {
     throw new Error("Failed to fetch graduation projects");
   }
@@ -92,8 +94,8 @@ export default async function Page() {
   const me = await getAuthenticatedInstructor();
   if (!me) {
     return (
-      <div className='flex justify-center items-center min-h-screen bg-gray-100'>
-        <h1 className='text-xl font-bold text-gray-700'>Not Authorized</h1>
+      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <h1 className="text-xl font-bold text-gray-700">Not Authorized</h1>
       </div>
     );
   }
@@ -105,31 +107,31 @@ export default async function Page() {
   const t = await getI18n();
 
   return (
-    <div className='min-h-screen p-6 flex flex-col items-center'>
-      <div className='flex flex-wrap gap-6 justify-center w-full'>
+    <div className="min-h-screen p-6 flex flex-col items-center">
+      <div className="flex flex-wrap gap-6 justify-center w-full">
         {myGroups.map((group: any) => (
-          <Card key={group._id} className='w-full sm:w-80 md:w-96 lg:w-[20rem]'>
+          <Card key={group._id} className="w-full sm:w-80 md:w-96 lg:w-[20rem]">
             <div>
-              <h1 className='text-lg font-semibold'>
+              <h1 className="text-lg font-semibold">
                 {t("graduation.projectTitle")}
               </h1>
-              <h2 className='text-xl font-bold'>{group.projectTitle}</h2>
+              <h2 className="text-xl font-bold">{group.projectTitle}</h2>
             </div>
             <div>
-              <h1 className='text-lg font-semibold'>{t("graduation.team")}</h1>
+              <h1 className="text-lg font-semibold">{t("graduation.team")}</h1>
               {group.enrollments.map((enrollment: any) => (
-                <div key={enrollment._id} className='mb-2'>
-                  <p className='text-gray-700'>{enrollment.student.fullName}</p>
+                <div key={enrollment._id} className="mb-2">
+                  <p className="text-gray-700">{enrollment.student.fullName}</p>
                 </div>
               ))}
             </div>
             <div>
-              <h1 className='text-lg font-semibold'>
+              <h1 className="text-lg font-semibold">
                 {t("graduation.supervisedBy")}
               </h1>
               {group.instructorTeachings.map((teaching: any) => (
-                <div key={teaching._id} className='mb-2'>
-                  <p className='text-gray-700'>
+                <div key={teaching._id} className="mb-2">
+                  <p className="text-gray-700">
                     {teaching.instructor.fullName}
                   </p>
                 </div>
@@ -137,18 +139,18 @@ export default async function Page() {
             </div>
             {group.assistantTeachings.length > 0 && (
               <div>
-                <h1 className='text-lg font-semibold'>
+                <h1 className="text-lg font-semibold">
                   {t("graduation.assist")}
                 </h1>
                 {group.assistantTeachings.map((teaching: any) => (
-                  <div key={teaching._id} className='mb-2'>
-                    <p className='text-gray-700'>{teaching.ta.fullName}</p>
+                  <div key={teaching._id} className="mb-2">
+                    <p className="text-gray-700">{teaching.ta.fullName}</p>
                   </div>
                 ))}
               </div>
             )}
-            <div className='flex justify-end mt-4 gap-4'>
-              <ButtonLink href={`/graduation/${group._id}`} variant='primary'>
+            <div className="flex justify-end mt-4 gap-4">
+              <ButtonLink href={`/graduation/${group._id}`} variant="primary">
                 {t("graduation.updateTitleMini")}
               </ButtonLink>
               <I18nProviderClient locale={locale}>
