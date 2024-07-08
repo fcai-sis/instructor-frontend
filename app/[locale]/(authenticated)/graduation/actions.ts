@@ -1,6 +1,6 @@
 "use server";
 
-import { graduationAPI } from "@/api";
+import { graduationAPI, graduationGroupAPI } from "@/api";
 import { getAccessToken } from "@/lib";
 import { revalidatePath } from "next/cache";
 import { CreateGraduationFormValues } from "./CreateGraduationForm";
@@ -47,7 +47,7 @@ export const createGraduationTeamAction = async (
 
   console.log(requestBody);
 
-  const response = await graduationAPI.post(`/create`, requestBody, {
+  const response = await graduationGroupAPI.post(`/create`, requestBody, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -140,8 +140,9 @@ export const updateGraduationTeamAction = async (
   return { success: true };
 };
 
-
-export const deleteGraduationAction = async (data: deleteGraduationFormValues) => {
+export const deleteGraduationAction = async (
+  data: deleteGraduationFormValues
+) => {
   const accessToken = await getAccessToken();
 
   const groupId = data.groupId;

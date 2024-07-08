@@ -47,20 +47,15 @@ export const getMyGraduationProjects = async () => {
 export const getGraduationProjectEnrollments = async () => {
   const accessToken = await getAccessToken();
 
-  const response = await graduationAPI.get(`/grad-enrolls`, {
+  const response = await graduationGroupAPI.get(`/grad-enrolls`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
   });
 
   if (response.status !== 200) {
-    revalidatePath("/graduation");
-    return {
-      enrollments: [],
-    };
+    throw new Error("Failed to fetch graduation project enrollments");
   }
-
-  revalidatePath("/graduation");
 
   return response.data;
 };
@@ -68,7 +63,7 @@ export const getGraduationProjectEnrollments = async () => {
 export const getGraduationProjectTeachings = async () => {
   const accessToken = await getAccessToken();
 
-  const response = await graduationAPI.get(`/grad-teachings`, {
+  const response = await graduationGroupAPI.get(`/grad-teachings`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },

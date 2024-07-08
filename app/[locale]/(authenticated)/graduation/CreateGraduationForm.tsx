@@ -7,6 +7,7 @@ import { z } from "zod";
 import { createGraduationTeamAction } from "./actions";
 import { useState } from "react";
 import { useI18n } from "@/locales/client";
+import en from "@/locales/en";
 
 const createGraduationFormSchema = z.object({
   projectTitle: z.string(),
@@ -146,42 +147,42 @@ export default function CreateGraduationForm({
   );
 
   return (
-    <div className='flex flex-col items-center justify-center max-w-3xl mx-auto my-8 p-6 bg-white border border-slate-200 rounded-lg shadow-md'>
-      <h1 className='text-2xl font-bold mb-6'>{t("graduation.title")}</h1>
+    <div className="flex flex-col items-center justify-center max-w-3xl mx-auto my-8 p-6 bg-white border border-slate-200 rounded-lg shadow-md">
+      <h1 className="text-2xl font-bold mb-6">{t("graduation.title")}</h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className='flex flex-col space-y-4 w-full'
+        className="flex flex-col space-y-4 w-full"
       >
-        <div className='flex flex-col'>
-          <label className='font-bold'>{t("graduation.projectTitle")}</label>
+        <div className="flex flex-col">
+          <label className="font-bold">{t("graduation.projectTitle")}</label>
           <input
-            type='text'
+            type="text"
             {...register("projectTitle")}
-            className='w-full p-2 border border-slate-300 rounded-lg'
+            className="w-full p-2 border border-slate-300 rounded-lg"
           />
 
           {errors.projectTitle && (
-            <span className='text-red-500'>{errors.projectTitle.message}</span>
+            <span className="text-red-500">{errors.projectTitle.message}</span>
           )}
         </div>
-        <div className='flex flex-col space-y-2'>
-          <label className='font-bold'>{t("graduation.enrollments")}</label>
+        <div className="flex flex-col space-y-2">
+          <label className="font-bold">{t("graduation.enrollments")}</label>
           <input
-            type='text'
+            type="text"
             placeholder={t("graduation.search")}
             value={enrollmentSearch}
             onChange={(e) => setEnrollmentSearch(e.target.value)}
-            className='w-full p-2 border border-slate-300 rounded-lg mb-2'
+            className="w-full p-2 border border-slate-300 rounded-lg mb-2"
           />
           {enrollmentFields.map((field, index) => (
-            <div key={field.id} className='flex gap-2'>
+            <div key={field.id} className="flex gap-2">
               <select
                 {...register(`enrollments.${index}.enrollment` as const)}
                 defaultValue={field.enrollment}
                 onChange={(e) => handleEnrollmentChange(index, e.target.value)}
-                className='w-full p-2 border border-slate-300 rounded-lg'
+                className="w-full p-2 border border-slate-300 rounded-lg"
               >
-                <option value='' disabled>
+                <option value="" disabled>
                   {t("graduation.selectEnrollment")}
                 </option>
                 {filteredEnrollments
@@ -192,46 +193,47 @@ export default function CreateGraduationForm({
                   )
                   .map((enrollment) => (
                     <option key={enrollment._id} value={enrollment._id}>
-                      {enrollment.student.studentId}
+                      ({enrollment.student.studentId}){" "}
+                      {enrollment.student.fullName}
                     </option>
                   ))}
               </select>
               <button
-                type='button'
+                type="button"
                 onClick={() => {
                   removeEnrollment(index);
                   const newSelectedEnrollments = [...selectedEnrollments];
                   newSelectedEnrollments.splice(index, 1);
                   setSelectedEnrollments(newSelectedEnrollments);
                 }}
-                className='btn-danger flex justify-center'
+                className="btn-danger flex justify-center"
               >
                 {t("general.remove")}
               </button>
             </div>
           ))}
           <button
-            type='button'
+            type="button"
             onClick={() => appendEnrollment({ enrollment: "" })}
-            className='btn flex justify-center'
+            className="btn flex justify-center"
           >
             {t("graduation.addEnrollment")}
           </button>
         </div>
 
-        <div className='flex flex-col space-y-2'>
-          <label className='font-bold'>
+        <div className="flex flex-col space-y-2">
+          <label className="font-bold">
             {t("graduation.instructorTeachings")}
           </label>
           <input
-            type='text'
+            type="text"
             placeholder={t("graduation.search")}
             value={instructorTeachingSearch}
             onChange={(e) => setInstructorTeachingSearch(e.target.value)}
-            className='w-full p-2 border border-slate-300 rounded-lg mb-2'
+            className="w-full p-2 border border-slate-300 rounded-lg mb-2"
           />
           {instructorFields.map((field, index) => (
-            <div key={field.id} className='flex gap-2'>
+            <div key={field.id} className="flex gap-2">
               <select
                 {...register(
                   `instructorTeachings.${index}.instructorTeaching` as const
@@ -240,9 +242,9 @@ export default function CreateGraduationForm({
                 onChange={(e) =>
                   handleInstructorTeachingChange(index, e.target.value)
                 }
-                className='w-full p-2 border border-slate-300 rounded-lg'
+                className="w-full p-2 border border-slate-300 rounded-lg"
               >
-                <option value='' disabled>
+                <option value="" disabled>
                   {t("graduation.selectInstructorTeaching")}
                 </option>
                 {filteredInstructorTeachings
@@ -265,7 +267,7 @@ export default function CreateGraduationForm({
                   ))}
               </select>
               <button
-                type='button'
+                type="button"
                 onClick={() => {
                   removeInstructor(index);
                   const newSelectedInstructorTeachings = [
@@ -276,35 +278,35 @@ export default function CreateGraduationForm({
                     newSelectedInstructorTeachings
                   );
                 }}
-                className='btn-danger flex justify-center'
+                className="btn-danger flex justify-center"
               >
                 {t("general.remove")}
               </button>
             </div>
           ))}
           <button
-            type='button'
+            type="button"
             onClick={() => appendInstructor({ instructorTeaching: "" })}
-            className='btn flex justify-center'
+            className="btn flex justify-center"
           >
             {t("graduation.addInstructorTeaching")}
           </button>
         </div>
 
         {showAssistantTeachings && (
-          <div className='flex flex-col space-y-2'>
-            <label className='font-bold'>
+          <div className="flex flex-col space-y-2">
+            <label className="font-bold">
               {t("graduation.assistantTeachings")}
             </label>
             <input
-              type='text'
+              type="text"
               placeholder={t("graduation.search")}
               value={assistantTeachingSearch}
               onChange={(e) => setAssistantTeachingSearch(e.target.value)}
-              className='w-full p-2 border border-slate-300 rounded-lg mb-2'
+              className="w-full p-2 border border-slate-300 rounded-lg mb-2"
             />
             {assistantFields.map((field, index) => (
-              <div key={field.id} className='flex gap-2'>
+              <div key={field.id} className="flex gap-2">
                 <select
                   {...register(
                     `assistantTeachings.${index}.assistantTeaching` as const
@@ -313,9 +315,9 @@ export default function CreateGraduationForm({
                   onChange={(e) =>
                     handleAssistantTeachingChange(index, e.target.value)
                   }
-                  className='w-full p-2 border border-slate-300 rounded-lg'
+                  className="w-full p-2 border border-slate-300 rounded-lg"
                 >
-                  <option value='' disabled>
+                  <option value="" disabled>
                     {t("graduation.selectAssistantTeaching")}
                   </option>
                   {filteredAssistantTeachings
@@ -338,7 +340,7 @@ export default function CreateGraduationForm({
                     ))}
                 </select>
                 <button
-                  type='button'
+                  type="button"
                   onClick={() => {
                     removeAssistant(index);
                     const newSelectedAssistantTeachings = [
@@ -349,16 +351,16 @@ export default function CreateGraduationForm({
                       newSelectedAssistantTeachings
                     );
                   }}
-                  className='btn-danger flex justify-center'
+                  className="btn-danger flex justify-center"
                 >
                   {t("general.remove")}
                 </button>
               </div>
             ))}
             <button
-              type='button'
+              type="button"
               onClick={() => appendAssistant({ assistantTeaching: "" })}
-              className='btn flex justify-center'
+              className="btn flex justify-center"
             >
               {t("graduation.addAssistantTeaching")}
             </button>
@@ -366,26 +368,26 @@ export default function CreateGraduationForm({
         )}
 
         <button
-          type='button'
+          type="button"
           onClick={() => setShowAssistantTeachings(!showAssistantTeachings)}
-          className='btn-secondary flex justify-center'
+          className="btn-secondary flex justify-center"
         >
           {showAssistantTeachings
             ? t("graduation.hideTeachingAssistants")
             : t("graduation.showTeachingAssistants")}
         </button>
 
-        <div className='flex justify-between'>
+        <div className="flex justify-between">
           <button
-            className='btn flex justify-center'
-            type='submit'
+            className="btn flex justify-center"
+            type="submit"
             disabled={isSubmitting}
           >
             {isSubmitting ? t("general.loading") : t("general.submit")}
           </button>
           <button
-            className='btn-secondary flex justify-center'
-            type='button'
+            className="btn-secondary flex justify-center"
+            type="button"
             onClick={(e) => {
               e.preventDefault();
               router.push("/");
