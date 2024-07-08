@@ -63,9 +63,6 @@ export default async function Page() {
               {instructor.email}
             </p>
             <p className="rounded-lg bg-blue-100 text-blue-500 px-4 py-2">
-              {instructor.officeHours}
-            </p>
-            <p className="rounded-lg bg-blue-100 text-blue-500 px-4 py-2">
               {tt(locale, instructor.department.name)}
             </p>
           </div>

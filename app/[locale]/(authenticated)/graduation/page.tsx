@@ -1,7 +1,7 @@
 import { getAccessToken, tokenPayload } from "@/lib";
 import CreateGraduationForm from "./CreateGraduationForm";
 import { revalidatePath } from "next/cache";
-import { graduationAPI } from "@/api";
+import { graduationAPI, graduationGroupAPI } from "@/api";
 import { I18nProviderClient } from "@/locales/client";
 import { getServerSession } from "next-auth";
 import { InstructorModel } from "@fcai-sis/shared-models";
@@ -29,19 +29,17 @@ export const getAuthenticatedInstructor = async () => {
 export const getMyGraduationProjects = async () => {
   const accessToken = await getAccessToken();
 
-  const response = await graduationAPI.get(`/mygroup`, {
+  const response = await graduationGroupAPI.get(`/mygroup`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
   });
 
-  console.log("KOSSO EL SISI", response.data);
+  console.log("resresrseresrserser", response.status, response.data);
 
   if (response.status !== 200) {
     throw new Error("Failed to fetch graduation projects");
   }
-
-  revalidatePath("/graduation");
 
   return response.data;
 };

@@ -50,11 +50,7 @@ export const uploadGradesAction = async (data: FormData) => {
   if (response.status !== 200) {
     return {
       success: false,
-      error: {
-        message: response.data.errors
-          .map((error: any) => error.message)
-          .join(", "),
-      },
+      ...response.data,
     };
   }
 

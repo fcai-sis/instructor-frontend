@@ -74,6 +74,11 @@ export const graduationAPI = axios.create({
   validateStatus: (status) => status < 500,
 });
 
+export const graduationGroupAPI = axios.create({
+  baseURL: process.env.GRADUATION_GROUP_API_URL,
+  validateStatus: (status) => status < 500,
+});
+
 export const statisticsAPI = axios.create({
   baseURL: process.env.STATISTICS_API_URL,
   validateStatus: (status) => status < 500,
